@@ -6,10 +6,6 @@ export class RoseTree {
 
 }
 
-export function* range(from: number, to: number) {
-  while (from++ < to) yield from
-}
-
 
 export interface R {
   integer: (min: number, max: number) => number
