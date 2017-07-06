@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`shrink tests generated rose tree 1`] = `
+Array [
+  Object {
+    "children": Array [],
+    "root": 0,
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [],
+        "root": 0,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "root": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "root": 0,
+              },
+            ],
+            "root": 1,
+          },
+        ],
+        "root": 2,
+      },
+    ],
+    "root": 3,
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [],
+        "root": 0,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "root": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "root": 0,
+              },
+            ],
+            "root": 1,
+          },
+        ],
+        "root": 2,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "root": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "root": 0,
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "root": 0,
+                  },
+                ],
+                "root": 1,
+              },
+            ],
+            "root": 2,
+          },
+        ],
+        "root": 3,
+      },
+    ],
+    "root": 4,
+  },
+]
+`;

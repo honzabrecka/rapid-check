@@ -40,7 +40,7 @@ describe('shrink', () => {
   it('tests generated rose tree', () => {
     const rts = shrink.int(5, 0)
 
-    expect(realize(rts)).toEqual([])
+    expect(realize(rts)).toMatchSnapshot()
     //expect(r.map(rt => rt.children())).toEqual({})
   })
 
