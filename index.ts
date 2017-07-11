@@ -153,18 +153,17 @@ function reduce<A, B>(f: AbortableReducer<A, B>, init: B) {
   }
 }
 
-export function transduce<A, B>(xf: (f: AbortableReducer<A, B>) => AbortableReducer<A, B>, f: Reducer<A, B>, init: B) {
-  const wrap = <A, B>(f: Reducer<A, B>): AbortableReducer<A, B> =>
-    ([reduced, prev], current) => [reduced, f(prev, current)]
+const wrap = <A, B>(f: Reducer<A, B>): AbortableReducer<A, B> =>
+  ([reduced, prev], current) => [reduced, f(prev, current)]
 
-  return (col: IterableIterator<A>): B =>
-    reduce(xf(wrap(f)), init)(col)
+export function transduce<A, B>(xf: (f: AbortableReducer<A, B>) => AbortableReducer<A, B>, f: Reducer<A, B>, init: B, col: IterableIterator<A>): B {
+  return reduce(xf(wrap(f)), init)(col)
 }
 
 export const comp = <A>(...fns: Function[]) => (v: A): A =>
   fns.reduceRight((r, f) => f(r), v)
 
-export const id = <T>(v: T) => v
+export const identity = <T>(v: T) => v
 
 export const complement = <A>(f: (v: A) => boolean) => (v: A) => !f(v)
 
@@ -180,3 +179,9 @@ export const tap = <T>(f: Function) => (v: T) => {
   f(v)
   return v
 }
+
+export const conj = <A>(col: A[], v: A): A[] =>
+  col.concat([v])
+
+export const intoArray = <T>(col: IterableIterator<T>) =>
+  transduce<T, T[]>(identity, conj, [], col)
