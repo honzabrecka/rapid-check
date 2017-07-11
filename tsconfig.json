@@ -4,7 +4,7 @@
     "declaration": true,
     "rootDir": "./",
     "outDir": "dist",
-    "target": "es5",
+    "target": "es6",
     "lib": ["es6", "dom"],
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
