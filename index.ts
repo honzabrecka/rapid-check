@@ -95,11 +95,8 @@ export const intoArray = <A, B>(xf: (f: AbortableReducer) => AbortableReducer, c
 //-----------------------------
 
 export class RoseTree {
-
   constructor(public root: number, public children: Function) {}
-
 }
-
 
 export interface RNG {
   (min: number, max: number): number
@@ -175,7 +172,7 @@ function shrinkFailing(test: RoseTree, prop: Function) {
 
 }
 
-function forAll(gen: ShrinkableGenerator, prop: Function, count = 100) {
+export function forAll(gen: ShrinkableGenerator, prop: Function, count = 100) {
   const samples = sample(rng, gen, count)
 
   for (let i = 0, v: any; i < samples.length; i++) {
@@ -186,9 +183,9 @@ function forAll(gen: ShrinkableGenerator, prop: Function, count = 100) {
     if (!prop(v)) {
       console.log('fail', v)
       shrinkFailing(samples[i], prop)
-      break
+      return false
     }
   }
-}
 
-forAll(gen.int, (v: number) => v < 40)
+  return true
+}
