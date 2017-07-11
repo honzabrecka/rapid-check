@@ -20,7 +20,7 @@ export type AbortableReducer = Reducer<any, Pair<boolean, any>>
 export function map<A, B>(f: (v: A) => B) {
   return (reducer: AbortableReducer): AbortableReducer =>
     (prev, current) =>
-      reducer(prev, f(current) as any)// TODODOODOOOOO!!!!!
+      reducer(prev, f(current) as any)
 }
 
 export function filter<A>(f: (v: A) => boolean) {
