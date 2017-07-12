@@ -32,8 +32,9 @@ describe('props', () => {
 
   it('failingInc', () => {
     const prop = (n) => failingInc(n) - n === 1
-    const [result, _] = forAll(gen.uint, prop, 1000)
+    const [result, sample] = forAll(gen.uint, prop, 1000)
     expect(result).toBe(false)
+    expect(sample.root).toBe(500)
   })
 
 })

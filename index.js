@@ -166,11 +166,32 @@ const rng = (min, max) => random.integer(min, max)(engine)
 //////
 
 function shrinkFailing(tree, prop) {
-  //console.log(test.children())
+  function* s() {
+    let children = tree.children()
+    let result
+    let i = 0
+    let child
+    let lastFailing = tree
 
+    while (i < children.length) {
+      child = children[i]
+      console.log(i, child.root)
+      result = prop(child.root)
 
+      if (result) {
+        i++
+      } else {
+        lastFailing = child
+        i = 0
+        children = child.children()
+        console.log(i, children.length)
+      }
 
-  return tree
+      yield lastFailing
+    }
+  }
+
+  return reduce((_, v) => [false, v], null)(s())
 }
 
 const forAll = (gen, prop, count = 100) => transduce(
