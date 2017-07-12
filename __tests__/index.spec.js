@@ -1,4 +1,4 @@
-import { RoseTree, roundTowardZero, shrink, toRoseTrees, inc } from '../index'
+const { roundTowardZero, shrink, toRoseTrees, inc } = require('../index')
 
 describe('roundTowardZero', () => {
 
@@ -31,8 +31,8 @@ describe('toRoseTrees', () => {
 
 })
 
-function realize(rts: RoseTree[]) {
-  return rts.map(rt => ({ root: rt.root, children: realize(rt.children()) }))
+function realize(trees) {
+  return trees.map(rt => ({ root: rt.root, children: realize(rt.children()) }))
 }
 
 describe('shrink', () => {

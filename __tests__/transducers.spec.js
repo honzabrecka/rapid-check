@@ -1,4 +1,4 @@
-import {
+const {
   AbortableReducer,
   comp,
   complement,
@@ -15,9 +15,9 @@ import {
   transduce,
   intoArray,
   takeWhile,
-} from '../index'
+} = require('../index')
 
-const lessThan = (b: number) => (a: number) => a < b
+const lessThan = (b) => (a) => a < b
 
 describe('lazy transducers', () => {
 
@@ -34,7 +34,7 @@ describe('lazy transducers', () => {
   })
 
   it('comp', () => {
-    expect(comp<number>(inc, inc)(1)).toBe(3)
+    expect(comp(inc, inc)(1)).toBe(3)
   })
 
   it('range', () => {
@@ -46,13 +46,19 @@ describe('lazy transducers', () => {
   })
 
   it('transduce', () => {
-    const xf = comp<AbortableReducer>(filter(odd), map(inc))
+    const xf = comp(
+      filter(odd),
+      map(inc)
+    )
     expect(transduce(xf, sum, 0, range(1, 3))).toBe(6)
   })
 
   it('transduce', () => {
     const mapper = jest.fn()
-    const xf = comp<AbortableReducer>(map(tap(mapper)), take(3))
+    const xf = comp(
+      map(tap(mapper)),
+      take(3)
+    )
     expect(transduce(xf, sum, 0, range(1, 10000))).toBe(6)
     expect(mapper).toHaveBeenCalledTimes(3)
   })
@@ -74,8 +80,8 @@ describe('lazy transducers', () => {
     const takeWhileLessThan3 = takeWhile(lessThan(3))
     const expected = [1, 2]
 
-    expect(intoArray(comp<any>(take5, takeWhileLessThan3), range(1, 10))).toEqual(expected)
-    expect(intoArray(comp<any>(takeWhileLessThan3, take5), range(1, 10))).toEqual(expected)
+    expect(intoArray(comp(take5, takeWhileLessThan3), range(1, 10))).toEqual(expected)
+    expect(intoArray(comp(takeWhileLessThan3, take5), range(1, 10))).toEqual(expected)
   })
 
 })
