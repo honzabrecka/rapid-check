@@ -55,8 +55,7 @@ function transduce(xf, f, init, col) {
   return reduce(xf(wrap(f)), init)(col)
 }
 
-const comp = (...fns) => (v) =>
-  fns.reduceRight((r, f) => f(r), v)
+const comp = (...fns) => (v) => fns.reduceRight((r, f) => f(r), v)
 
 const identity = (v) => v
 
