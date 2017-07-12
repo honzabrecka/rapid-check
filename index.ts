@@ -94,8 +94,17 @@ export const intoArray = <A, B>(xf: (f: AbortableReducer) => AbortableReducer, c
 // rapid
 //-----------------------------
 
+const rt_fmap = (f: Function, context: RoseTree): RoseTree => new RoseTree(
+  f(context.root),
+  () => context.children().map((child) => rt_fmap(f, child))
+)
+
 export class RoseTree {
-  constructor(public root: number, public children: Function) {}
+  constructor(public root: number, public children: () => RoseTree[]) {}
+
+  map(f: Function): RoseTree {
+    return rt_fmap(f, this)
+  }
 }
 
 export interface RNG {
@@ -142,9 +151,14 @@ const choose = (min: number, max: number, center: number = min): ShrinkableGener
 
 const int: ShrinkableGenerator = (r, size) => choose(-size, size)(r, size)
 
+const fmap = <A, B>(f: (v: A) => B, gen: ShrinkableGenerator): ShrinkableGenerator =>
+  (rng, size) => gen(rng, size).map(f)
+
+
 export const gen = {
   choose,
-  int
+  int,
+  fmap,
 }
 
 export const sample = (rng: RNG, gen: ShrinkableGenerator, count = 10): RoseTree[] =>

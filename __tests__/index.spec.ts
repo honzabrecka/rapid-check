@@ -1,4 +1,4 @@
-import { RoseTree, roundTowardZero, shrink, toRoseTrees } from '../index'
+import { RoseTree, roundTowardZero, shrink, toRoseTrees, inc } from '../index'
 
 describe('roundTowardZero', () => {
 
@@ -39,9 +39,12 @@ describe('shrink', () => {
 
   it('tests generated rose tree', () => {
     const rts = shrink.int(5, 0)
-
     expect(realize(rts)).toMatchSnapshot()
-    //expect(r.map(rt => rt.children())).toEqual({})
+  })
+
+  it('tests mapped generated rose tree', () => {
+    const rts = shrink.int(5, 0).map((tree) => tree.map(inc))
+    expect(realize(rts)).toMatchSnapshot()
   })
 
 })
