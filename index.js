@@ -151,14 +151,19 @@ const sample = (rng, gen, count = 10) =>
     range(0, count - 1)
   )
 
+
+function* sampleG(rng, gen, count = 10) {
+  for (let i = 0; i < count; i++)
+    yield gen(rng, Math.floor(i / 2) + 1)
+}
+
+
 const engine = random.engines.mt19937()
 engine.seed(9)
 
 const rng = (min, max) => random.integer(min, max)(engine)
 
 // console.log(sample(rng, gen.int, 100))
-
-
 
 //////
 
@@ -188,6 +193,19 @@ function forAll(gen, prop, count = 100) {
   return true
 }
 
+function forAllG(gen, prop, count = 100) {
+  let current
+  const samples = sampleG(rng, gen, count)
+  while (!(current = samples.next()).done) {
+    if (!prop(current.value)) {
+      console.log('fail', current.value)
+      shrinkFailing(current.value, prop)
+      return false
+    }
+  }
+  return true
+}
+
 module.exports = {
   range,
   map,
@@ -212,5 +230,7 @@ module.exports = {
   forAll,
   roundTowardZero,
   toRoseTrees,
-  RoseTree
+  RoseTree,
+  sampleG,
+  forAllG
 }
