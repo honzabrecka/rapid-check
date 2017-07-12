@@ -14,6 +14,7 @@ const {
   tap,
   transduce,
   intoArray,
+  dorun,
   takeWhile,
 } = require('../index')
 
@@ -82,6 +83,14 @@ describe('lazy transducers', () => {
 
     expect(intoArray(comp(take5, takeWhileLessThan3), range(1, 10))).toEqual(expected)
     expect(intoArray(comp(takeWhileLessThan3, take5), range(1, 10))).toEqual(expected)
+  })
+
+  it('dorun', () => {
+    const f = jest.fn()
+    expect(dorun(map(f), range(1, 3))).toBe(null)
+    expect(f).toHaveBeenCalledWith(1)
+    expect(f).toHaveBeenCalledWith(2)
+    expect(f).toHaveBeenCalledWith(3)
   })
 
 })

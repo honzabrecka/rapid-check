@@ -78,6 +78,8 @@ const conj = (col, v) => col.concat([v])
 
 const intoArray = (xf, col) => transduce(xf, conj, [], col)
 
+const dorun = (xf, col) => transduce(xf, identity, null, col)
+
 //-----------------------------
 // rapid
 //-----------------------------
@@ -194,16 +196,17 @@ function forAll(gen, prop, count = 100) {
 }
 
 function forAllG(gen, prop, count = 100) {
-  let current
-  const samples = sampleG(rng, gen, count)
-  while (!(current = samples.next()).done) {
-    if (!prop(current.value)) {
-      console.log('fail', current.value)
-      shrinkFailing(current.value, prop)
-      return false
-    }
-  }
-  return true
+  const [result, sample] = transduce(
+    comp(
+      map((sample) => [prop(sample), sample]),
+      map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),
+      takeWhile(([result, _]) => result === true)
+    ),
+    ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
+    [true, null],
+    sampleG(rng, gen, count)
+  )
+  return result
 }
 
 module.exports = {
@@ -223,6 +226,7 @@ module.exports = {
   sum,
   inc,
   intoArray,
+  dorun,
   gen,
   sample,
   shrink,
