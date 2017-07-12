@@ -138,12 +138,15 @@ const choose = (min, max, center = min) => (rng, _) => {
 
 const int = (rng, size) => choose(-size, size)(rng, size)
 
+const uint = (rng, size) => choose(0, size * 2)(rng, size)
+
 const fmap = (f, gen) => (rng, size) => gen(rng, size).map(f)
 
 
 const gen = {
   choose,
   int,
+  uint,
   fmap,
 }
 

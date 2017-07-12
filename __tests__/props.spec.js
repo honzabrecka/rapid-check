@@ -32,7 +32,7 @@ describe('props', () => {
 
   it('failingInc', () => {
     const prop = (n) => failingInc(n) - n === 1
-    const [result, _] = forAll(gen.int, prop, 2000)
+    const [result, _] = forAll(gen.uint, prop, 1000)
     expect(result).toBe(false)
   })
 
