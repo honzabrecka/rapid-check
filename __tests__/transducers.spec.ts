@@ -17,6 +17,8 @@ import {
   takeWhile,
 } from '../index'
 
+const lessThan = (b: number) => (a: number) => a < b
+
 describe('lazy transducers', () => {
 
   it('even with even number', () => {
@@ -64,8 +66,16 @@ describe('lazy transducers', () => {
   })
 
   it('takeWhile', () => {
-    const lessThan = (b: number) => (a: number) => a < b
     expect(intoArray(takeWhile(lessThan(3)), range(1, 10))).toEqual([1, 2])
+  })
+
+  it('once reduced, always reduced', () => {
+    const take5 = take(5)
+    const takeWhileLessThan3 = takeWhile(lessThan(3))
+    const expected = [1, 2]
+
+    expect(intoArray(comp<any>(take5, takeWhileLessThan3), range(1, 10))).toEqual(expected)
+    expect(intoArray(comp<any>(takeWhileLessThan3, take5), range(1, 10))).toEqual(expected)
   })
 
 })
