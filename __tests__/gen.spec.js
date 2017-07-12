@@ -1,10 +1,12 @@
-const { forAllG, gen, tap, RoseTree } = require('../index')
+const { forAll, gen, tap, RoseTree } = require('../index')
 
 describe('generators', () => {
 
   it('test', () => {
     const prop = jest.fn().mockReturnValue(true)
-    expect(forAllG(gen.int, prop, 100)).toBe(true)
+    const [result, sample] = forAll(gen.int, prop, 100)
+    expect(result).toBe(true)
+    expect(sample).toBeInstanceOf(RoseTree)
     expect(prop).toHaveBeenCalledTimes(100)
   })
 

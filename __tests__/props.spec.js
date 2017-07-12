@@ -17,16 +17,23 @@ describe('props', () => {
   })
 
   it('even', () => {
-    expect(forAll(gen.int, (n) => even(n) === endsWith(0, 2, 4, 6, 8)(n))).toBe(true)
+    expect(forAll(gen.int, (n) => even(n) === endsWith(0, 2, 4, 6, 8)(n))[0]).toBe(true)
   })
 
   it('inc', () => {
-    expect(forAll(gen.int, (n) => inc(n) > n)).toBe(true)
-    expect(forAll(gen.int, (n) => inc(n) - n === 1)).toBe(true)
+    const [result, sample] = forAll(gen.int, (n) => inc(n) > n)
+    expect(result).toBe(true)
+  })
+
+  it('inc', () => {
+    const [result, sample] = forAll(gen.int, (n) => inc(n) - n === 1)
+    expect(result).toBe(true)
   })
 
   it('failingInc', () => {
-    expect(forAll(gen.int, (n) => failingInc(n) - n === 1, 2000)).toBe(false)
+    const prop = (n) => failingInc(n) - n === 1
+    const [result, _] = forAll(gen.int, prop, 2000)
+    expect(result).toBe(false)
   })
 
 })

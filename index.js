@@ -29,11 +29,11 @@ function take(n) {
   }
 }
 
-function takeWhile(f) {
+function takeWhile(f, x = false) {
   return (reducer) => {
     return ([reduced, prev], current) => {
       reduced = reduced || !f(current)
-      return reduced ? [reduced, prev] : reducer([reduced, prev], current)
+      return reduced && !x ? [reduced, prev] : reducer([reduced, prev], current)
     }
   }
 }
@@ -147,14 +147,7 @@ const gen = {
   fmap,
 }
 
-const sample = (rng, gen, count = 10) =>
-  intoArray(
-    map((n) => gen(rng, Math.floor(n / 2) + 1)),
-    range(0, count - 1)
-  )
-
-
-function* sampleG(rng, gen, count = 10) {
+function* sample(rng, gen, count = 10) {
   for (let i = 0; i < count; i++)
     yield gen(rng, Math.floor(i / 2) + 1)
 }
@@ -174,40 +167,19 @@ function shrinkFailing(tree, prop) {
 
 
 
-
+  return tree
 }
 
-function forAll(gen, prop, count = 100) {
-  const samples = sample(rng, gen, count)
-
-  for (let i = 0, v; i < samples.length; i++) {
-    v = samples[i].root
-
-    //console.log('v', samples[i])
-
-    if (!prop(v)) {
-      console.log('fail', v)
-      shrinkFailing(samples[i], prop)
-      return false
-    }
-  }
-
-  return true
-}
-
-function forAllG(gen, prop, count = 100) {
-  const [result, sample] = transduce(
-    comp(
-      map((sample) => [prop(sample), sample]),
-      map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),
-      takeWhile(([result, _]) => result === true)
-    ),
-    ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
-    [true, null],
-    sampleG(rng, gen, count)
-  )
-  return result
-}
+const forAll = (gen, prop, count = 100) => transduce(
+  comp(
+    map((sample) => [prop(sample.root), sample]),
+    map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),
+    takeWhile(([result, _]) => result === true, true)
+  ),
+  ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
+  [true, null],
+  sample(rng, gen, count)
+)
 
 module.exports = {
   range,
@@ -235,6 +207,4 @@ module.exports = {
   roundTowardZero,
   toRoseTrees,
   RoseTree,
-  sampleG,
-  forAllG
 }
