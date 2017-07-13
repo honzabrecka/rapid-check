@@ -1,25 +1,21 @@
+const random = require('random-js')
 
+const {
+  intoArray,
+  identity
+} = require('./core')
 
-const rt_fmap = (f, context) => new RoseTree(
-  f(context.root),
-  () => context.children().map((child) => rt_fmap(f, child))
-)
+const defaultSampleCount = 10
 
-class RoseTree {
-
-  constructor(root, children) {
-    this.root = root
-    this.children = children
-  }
-
-  map(f) {
-    return rt_fmap(f, this)
-  }
-
+function* sampleG(rng, gen, count = defaultSampleCount) {
+  for (let i = 0; i < count; i++)
+    yield gen(rng, Math.floor(i / 2) + 1)
 }
 
-const engine = random.engines.mt19937()
-engine.seed(9)
+const sample = (rng, gen, count = defaultSampleCount) =>
+  intoArray(identity, sampleG(rng, gen, count))
+
+const engine = random.engines.mt19937().seed(9)
 
 const rng = (min, max) => random.integer(min, max)(engine)
 
@@ -68,29 +64,6 @@ const forAll = (gen, prop, count = 100) => transduce(
 )
 
 module.exports = {
-  range,
-  map,
-  filter,
-  take,
-  takeWhile,
-  transduce,
-  comp,
-  conj,
-  tap,
-  identity,
-  complement,
-  even,
-  odd,
-  sum,
-  inc,
-  intoArray,
-  dorun,
-  gen,
   sample,
-  shrink,
-  shrinkFailing,
   forAll,
-  roundTowardZero,
-  toRoseTrees,
-  RoseTree,
 }
