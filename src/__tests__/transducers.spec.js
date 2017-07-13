@@ -2,6 +2,12 @@ const {
   range,
   reduce,
   transduce,
+  dorun,
+  map,
+  filter,
+  take,
+  takeWhile,
+  tap,
   identity
 } = require('../core')
 
@@ -30,11 +36,26 @@ describe('reduce', () => {
 
 describe('transduce', () => {
   it('acts as reduce when xf = identity', () => {
-    const f = jest.fn().mockReturnValue([false, 'whatever'])
+    const f = jest.fn().mockReturnValue('whatever')
     transduce(identity, f, 'whatever', range(1, 3))
     expect(f).toHaveBeenCalledTimes(3)
-    expect(f).toHaveBeenCalledWith([false, 'whatever'], 1)
-    expect(f).toHaveBeenCalledWith([false, 'whatever'], 2)
-    expect(f).toHaveBeenCalledWith([false, 'whatever'], 3)
+    expect(f).toHaveBeenCalledWith('whatever', 1)
+    expect(f).toHaveBeenCalledWith('whatever', 2)
+    expect(f).toHaveBeenCalledWith('whatever', 3)
+  })
+})
+
+describe('dorun', () => {
+  it('dorun returns always null', () => {
+    expect(dorun(identity, range(1, 3))).toBe(null)
+  })
+
+  it('calls f', () => {
+    const f = jest.fn()
+    dorun(map(tap(f)), range(1, 3))
+    expect(f).toHaveBeenCalledTimes(3)
+    expect(f).toHaveBeenCalledWith(1)
+    expect(f).toHaveBeenCalledWith(2)
+    expect(f).toHaveBeenCalledWith(3)
   })
 })

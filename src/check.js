@@ -7,6 +7,8 @@ const {
 
 const defaultSampleCount = 10
 
+const defaultForAllCount = 100
+
 function* sampleG(rng, gen, count = defaultSampleCount) {
   for (let i = 0; i < count; i++)
     yield gen(rng, Math.floor(i / 2) + 1)
@@ -28,7 +30,7 @@ function shrinkFailing(tree, prop) {
 
     while (i < children.length) {
       child = children[i]
-      result = prop(child.root)// memoize
+      result = prop(child.root)// TODO memoize
 
       if (result) {
         i++
@@ -52,7 +54,7 @@ function shrinkFailing(tree, prop) {
   )(s())
 }
 
-const forAll = (gen, prop, count = 100) => transduce(
+const forAll = (gen, prop, count = defaultForAllCount) => transduce(
   comp(
     map((sample) => [prop(sample.root), sample]),
     map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),

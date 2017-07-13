@@ -6,6 +6,8 @@ const {
   range
 } = require('./core')
 
+// type RoseTree T = [value: T, children: T -> Array (RoseTree T)]
+
 const toRoseTrees = (col, f) =>
   col.map((v) => [v, () => f(v)])
 
@@ -14,7 +16,7 @@ const roundTowardZero = (x) =>
     ? Math.ceil(x)
     : Math.floor(x)
 
-const roseify = (f) => {
+function roseify(f) {
   const roseified = (...args) => toRoseTrees(
     f.apply(null, args),
     (value) => roseified.apply(null, [value].concat(args.slice(1)))
