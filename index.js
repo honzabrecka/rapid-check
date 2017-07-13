@@ -161,10 +161,6 @@ engine.seed(9)
 
 const rng = (min, max) => random.integer(min, max)(engine)
 
-// console.log(sample(rng, gen.int, 100))
-
-//////
-
 function shrinkFailing(tree, prop) {
   function* s() {
     let children = tree.children()
