@@ -171,27 +171,31 @@ function shrinkFailing(tree, prop) {
     let result
     let i = 0
     let child
-    let lastFailing = tree
 
     while (i < children.length) {
       child = children[i]
-      console.log(i, child.root)
       result = prop(child.root)
 
       if (result) {
         i++
       } else {
-        lastFailing = child
         i = 0
         children = child.children()
-        console.log(i, children.length)
       }
 
-      yield lastFailing
+      yield [result, child]
     }
   }
 
-  return reduce((_, v) => [false, v], null)(s())
+  return reduce(
+    ([reduced, [lastFailingNode, attempts, shrinks]], [result, node]) =>
+      [reduced, [
+        result ? lastFailingNode : node,
+        attempts + 1,
+        shrinks + (result ? 0 : 1)
+      ]],
+    [tree, 0, 0]
+  )(s())
 }
 
 const forAll = (gen, prop, count = 100) => transduce(
