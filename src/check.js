@@ -10,6 +10,8 @@ const {
   comp
 } = require('./core')
 
+const { shrink } = require('./shrink')
+
 const defaultSampleCount = 10
 
 const defaultForAllCount = 100
@@ -27,27 +29,6 @@ const engine = random.engines.mt19937().seed(9)
 const rng = (min, max) => random.integer(min, max)(engine)
 
 function shrinkFailing(tree, prop) {
-  function* shrink(nextChildren) {
-    let children = nextChildren()
-    let i = 0
-    let result
-    let value
-
-    while (i < children.length) {
-      [value, nextChildren] = children[i]
-      result = prop(value)
-
-      if (result) {
-        i++
-      } else {
-        i = 0
-        children = nextChildren()
-      }
-
-      yield [result, [value, nextChildren]]
-    }
-  }
-
   return reduce(
     ([reduced, [lastFailingNode, attempts, shrinks]], [result, node]) =>
       [reduced, [
@@ -56,7 +37,7 @@ function shrinkFailing(tree, prop) {
         shrinks + (result ? 0 : 1)
       ]],
     [tree, 0, 0]
-  )(shrink(tree[1]))
+  )(shrink(tree[1], prop))
 }
 
 const forAll = (gen, prop, count = defaultForAllCount) => transduce(
