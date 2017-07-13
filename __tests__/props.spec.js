@@ -39,4 +39,13 @@ describe('props', () => {
     expect(shrinks).toBe(2)
   })
 
+  it('failingInc', () => {
+    const prop = (n) => failingInc(n) - n === 1
+    const [result, [sample, attempts, shrinks]] = forAll(gen.constantly(567), prop, 1000)
+    expect(result).toBe(false)
+    expect(sample.root).toBe(567)
+    expect(attempts).toBe(0)
+    expect(shrinks).toBe(0)
+  })
+
 })

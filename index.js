@@ -136,6 +136,8 @@ const choose = (min, max, center = min) => (rng, _) => {
   return new RoseTree(n, () => shrink.int(n, center))
 }
 
+const constantly = (value) => (_, __) => new RoseTree(value, () => [])
+
 const int = (rng, size) => choose(-size, size)(rng, size)
 
 const uint = (rng, size) => choose(0, size * 2)(rng, size)
@@ -144,6 +146,7 @@ const fmap = (f, gen) => (rng, size) => gen(rng, size).map(f)
 
 
 const gen = {
+  constantly,
   choose,
   int,
   uint,
