@@ -23,6 +23,7 @@ function take(n) {
   }
 }
 
+// TODO what with x, unify functionality
 function takeWhile(f, x = false) {
   return (reducer) => {
     return ([reduced, prev], current) => {
