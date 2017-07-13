@@ -1,8 +1,13 @@
 const random = require('random-js')
 
 const {
+  reduce,
+  transduce,
   intoArray,
-  identity
+  identity,
+  map,
+  takeWhile,
+  comp
 } = require('./core')
 
 const defaultSampleCount = 10
@@ -22,24 +27,24 @@ const engine = random.engines.mt19937().seed(9)
 const rng = (min, max) => random.integer(min, max)(engine)
 
 function shrinkFailing(tree, prop) {
-  function* s() {
-    let children = tree.children()
+  function* shrink(nextChildren) {
+    let children = nextChildren()
     let i = 0
     let result
-    let child
+    let value
 
     while (i < children.length) {
-      child = children[i]
-      result = prop(child.root)// TODO memoize
+      [value, nextChildren] = children[i]
+      result = prop(value)
 
       if (result) {
         i++
       } else {
         i = 0
-        children = child.children()
+        children = nextChildren()
       }
 
-      yield [result, child]
+      yield [result, [value, nextChildren]]
     }
   }
 
@@ -51,21 +56,22 @@ function shrinkFailing(tree, prop) {
         shrinks + (result ? 0 : 1)
       ]],
     [tree, 0, 0]
-  )(s())
+  )(shrink(tree[1]))
 }
 
 const forAll = (gen, prop, count = defaultForAllCount) => transduce(
   comp(
-    map((sample) => [prop(sample.root), sample]),
+    map((sample) => [prop(sample[0]), sample]),
     map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),
     takeWhile(([result, _]) => result === true, true)
   ),
   ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
   [true, null],
-  sample(rng, gen, count)
+  sampleG(rng, gen, count)
 )
 
 module.exports = {
+  rng,
   sample,
   forAll,
 }

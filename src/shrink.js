@@ -6,23 +6,12 @@ const {
   range
 } = require('./core')
 
-// type RoseTree T = [value: T, children: T -> Array (RoseTree T)]
-
-const toRoseTrees = (col, f) =>
-  col.map((v) => [v, () => f(v)])
+const { roseify } = require('./rosetree')
 
 const roundTowardZero = (x) =>
   x < 0
     ? Math.ceil(x)
     : Math.floor(x)
-
-function roseify(f) {
-  const roseified = (...args) => toRoseTrees(
-    f.apply(null, args),
-    (value) => roseified.apply(null, [value].concat(args.slice(1)))
-  )
-  return roseified
-}
 
 const int = roseify((n, center) => {
   const diff = (i) => (center - n) / Math.pow(2, i)
@@ -40,7 +29,6 @@ const tuple = roseify((trees) => {
 })
 
 module.exports = {
-  toRoseTrees,
   roundTowardZero,
   int,
   tuple,

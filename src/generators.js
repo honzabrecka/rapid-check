@@ -1,3 +1,7 @@
+const rosetree = require('./rosetree')
+
+const shrink = require('./shrink')
+
 const constantly = (value) => (_, __) => [value, () => []]
 
 const choose = (min, max, center = min) => (rng, _) => {
@@ -9,7 +13,7 @@ const int = (rng, size) => choose(-size, size)(rng, size)
 
 const uint = (rng, size) => choose(0, size)(rng, size)
 
-const fmap = (f, gen) => (rng, size) => gen(rng, size).map(f)
+const fmap = (f, gen) => (rng, size) => rosetree.fmap(f, gen(rng, size))
 
 const tuple = (...gens) => (rng, size) => {
   const elements = gens.map((gen) => gen(rng, size))
