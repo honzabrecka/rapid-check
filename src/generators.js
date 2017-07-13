@@ -18,7 +18,7 @@ const fmap = (f, gen) => (rng, size) => rosetree.fmap(f, gen(rng, size))
 const tuple = (...gens) => (rng, size) => {
   const elements = gens.map((gen) => gen(rng, size))
   return [
-    elements.map((tree) => tree.root),
+    elements.map(([value, _]) => value),
     () => shrink.tuple(elements)
   ]
 }
