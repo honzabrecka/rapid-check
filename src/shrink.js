@@ -6,7 +6,10 @@ const {
   range
 } = require('./core')
 
-const { roseify } = require('./rosetree')
+const { roseify, RoseTree } = require('./rosetree')
+
+// type ShrinkResult T = [boolean, RoseTree T]
+const ShrinkResult = (result, tree) => [result, tree]
 
 const roundTowardZero = (x) =>
   x < 0
@@ -45,7 +48,7 @@ function* shrink(nextChildren, prop) {
       children = nextChildren()
     }
 
-    yield [result, [value, nextChildren]]
+    yield ShrinkResult(result, RoseTree(value, nextChildren))
   }
 }
 

@@ -1,7 +1,12 @@
-// type RoseTree T = [value: T, children: T -> Array (RoseTree T)]
+// type RoseTree T = [value: T, children: () -> Array (RoseTree T)]
+const RoseTree = (value, children) => [value, children]
+
+const rvalue = ([value, _]) => value
+
+const rchildren = ([_, children]) => children
 
 const toRoseTrees = (col, f) =>
-  col.map((v) => [v, () => f(v)])
+  col.map((v) => RoseTree(v, () => f(v)))
 
 function roseify(f) {
   const roseified = (...args) => toRoseTrees(
@@ -11,12 +16,15 @@ function roseify(f) {
   return roseified
 }
 
-const fmap = (f, [value, children]) => [
+const fmap = (f, [value, children]) => RoseTree(
   f(value),
   () => children().map((child) => fmap(f, child))
-]
+)
 
 module.exports = {
+  RoseTree,
+  rvalue,
+  rchildren,
   toRoseTrees,
   roseify,
   fmap,

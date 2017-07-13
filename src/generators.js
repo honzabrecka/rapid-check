@@ -1,12 +1,14 @@
 const rosetree = require('./rosetree')
 
+const { RoseTree, rvalue } = rosetree
+
 const shrink = require('./shrink')
 
-const constantly = (value) => (_, __) => [value, () => []]
+const constantly = (value) => (_rng, _size) => RoseTree(value, () => [])
 
-const choose = (min, max, center = min) => (rng, _) => {
+const choose = (min, max, center = min) => (rng, _size) => {
   const n = rng(min, max)
-  return [n, () => shrink.int(n, center)]
+  return RoseTree(n, () => shrink.int(n, center))
 }
 
 const int = (rng, size) => choose(-size, size)(rng, size)
@@ -17,10 +19,10 @@ const fmap = (f, gen) => (rng, size) => rosetree.fmap(f, gen(rng, size))
 
 const tuple = (...gens) => (rng, size) => {
   const elements = gens.map((gen) => gen(rng, size))
-  return [
-    elements.map(([value, _]) => value),
+  return RoseTree(
+    elements.map(rvalue),
     () => shrink.tuple(elements)
-  ]
+  )
 }
 
 module.exports = {
