@@ -133,12 +133,68 @@ describe('forAll shrinking', () => {
     // expect(shrinks).toBe(0)
   })
 
+  it('gen.tuple(gen.uint) shrinking', () => {
+    const prop = ([a]) => a < 29
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint), prop)
+    expect(result).toBe(false)
+    expect(value).toEqual([29])
+    // expect(attempts).toBe(4)
+    // expect(shrinks).toBe(0)
+  })
+
+  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+    const prop = ([a, b]) => !(a >= 9 && b >= 12)
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
+    expect(result).toBe(false)
+    expect(value).toEqual([9, 12])
+    // expect(attempts).toBe(4)
+    // expect(shrinks).toBe(0)
+  })
+
+  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+    const prop = ([a, _]) => a < 29
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
+    expect(result).toBe(false)
+    expect(value).toEqual([29, 0])
+    // expect(attempts).toBe(4)
+    // expect(shrinks).toBe(0)
+  })
+
+  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+    const prop = ([_, b]) => b < 29
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
+    expect(result).toBe(false)
+    expect(value).toEqual([0, 29])
+    // expect(attempts).toBe(4)
+    // expect(shrinks).toBe(0)
+  })
+
+  it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', () => {
+    const prop = ([a]) => a > -29
+    const f = (n) => -n
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(fmap(f, uint)), prop)
+    expect(result).toBe(false)
+    expect(value).toEqual([-29])
+    // expect(attempts).toBe(4)
+    // expect(shrinks).toBe(0)
+  })
+
   it('gen.fmap shrinking', () => {
     const f = (n) => -n
     const prop = (v) => v > -28
     const [result, [[value, _], attempts, shrinks]] = forAll(fmap(f, uint), prop)
     expect(result).toBe(false)
     expect(value).toBe(-28)
+    // expect(attempts).toBe(9)
+    // expect(shrinks).toBe(1)
+  })
+
+  it('gen.fmap shrinking', () => {
+    const f = (n) => -n
+    const prop = (v) => v > -598325
+    const [result, [[value, _], attempts, shrinks]] = forAll(fmap(f, uint), prop, 2000000)
+    expect(result).toBe(false)
+    expect(value).toBe(-598325)
     // expect(attempts).toBe(9)
     // expect(shrinks).toBe(1)
   })

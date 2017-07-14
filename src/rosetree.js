@@ -25,7 +25,6 @@ module.exports = {
   RoseTree,
   rvalue,
   rchildren,
-  toRoseTrees,
   roseify,
   fmap,
 }

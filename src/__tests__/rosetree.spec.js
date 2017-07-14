@@ -5,24 +5,6 @@ const {
 
 const { inc } = require('../core')
 
-describe('toRoseTrees', () => {
-
-  const [a, b] = toRoseTrees([1, 2], (x) => x)
-
-  it('toRoseTrees a', () => {
-    const [value, children] = a
-    expect(value).toBe(1)
-    expect(children()).toBe(1)
-  })
-
-  it('toRoseTrees b', () => {
-    const [value, children] = b
-    expect(value).toBe(2)
-    expect(children()).toBe(2)
-  })
-
-})
-
 it('fmap', () => {
   const tree = [1, () => [
     [5, () => []]

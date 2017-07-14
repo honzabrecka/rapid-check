@@ -1,6 +1,12 @@
 const {
   roundTowardZero,
+  int,
+  tuple
 } = require('../shrink')
+
+const rng = require('../rng')
+
+const gen = require('../generators')
 
 describe('roundTowardZero', () => {
 
@@ -16,3 +22,16 @@ describe('roundTowardZero', () => {
   })
 
 })
+
+const realize = (trees) => trees.map(([value, children]) => ({
+  value,
+  children: realize(children())
+}))
+
+it('int', () => {
+  expect(realize(int(5, 0))).toMatchSnapshot()
+})
+
+// it('tuple(uint)', () => {
+//   expect(realize(tuple([gen.uint(rng(), 3)]))).toBe(false)
+// })

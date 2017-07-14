@@ -1,4 +1,4 @@
-const random = require('random-js')
+const rng = require('./rng')
 
 const {
   reduce,
@@ -21,12 +21,8 @@ function* sampleG(rng, gen, count = defaultSampleCount) {
     yield gen(rng, Math.floor(i / 2) + 1)
 }
 
-const sample = (rng, gen, count = defaultSampleCount) =>
-  intoArray(identity, sampleG(rng, gen, count))
-
-const engine = random.engines.mt19937().seed(9)
-
-const rng = (min, max) => random.integer(min, max)(engine)
+const sample = (gen, count = defaultSampleCount) =>
+  intoArray(identity, sampleG(rng(), gen, count))
 
 function shrinkFailing(tree, prop) {
   return reduce(
@@ -48,11 +44,10 @@ const forAll = (gen, prop, count = defaultForAllCount) => transduce(
   ),
   ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
   [true, null],
-  sampleG(rng, gen, count)
+  sampleG(rng(), gen, count)
 )
 
 module.exports = {
-  rng,
   sample,
   forAll,
 }

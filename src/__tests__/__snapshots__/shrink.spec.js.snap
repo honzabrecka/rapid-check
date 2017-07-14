@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`int 1`] = `
+Array [
+  Object {
+    "children": Array [],
+    "value": 0,
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [],
+        "value": 0,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "value": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "value": 0,
+              },
+            ],
+            "value": 1,
+          },
+        ],
+        "value": 2,
+      },
+    ],
+    "value": 3,
+  },
+  Object {
+    "children": Array [
+      Object {
+        "children": Array [],
+        "value": 0,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "value": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "value": 0,
+              },
+            ],
+            "value": 1,
+          },
+        ],
+        "value": 2,
+      },
+      Object {
+        "children": Array [
+          Object {
+            "children": Array [],
+            "value": 0,
+          },
+          Object {
+            "children": Array [
+              Object {
+                "children": Array [],
+                "value": 0,
+              },
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "value": 0,
+                  },
+                ],
+                "value": 1,
+              },
+            ],
+            "value": 2,
+          },
+        ],
+        "value": 3,
+      },
+    ],
+    "value": 4,
+  },
+]
+`;

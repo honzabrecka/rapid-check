@@ -3,10 +3,11 @@ const {
   intoArray,
   takeWhile,
   map,
-  range
+  range,
+  conj
 } = require('./core')
 
-const { roseify, RoseTree } = require('./rosetree')
+const { roseify, RoseTree, rvalue } = require('./rosetree')
 
 // type ShrinkResult T = [boolean, RoseTree T]
 const ShrinkResult = (result, tree) => [result, tree]
@@ -27,9 +28,25 @@ const int = roseify((n, center) => {
   )
 })
 
-const tuple = roseify((trees) => {
-  return []
-})
+const splitAt = (col, index) => [
+  col.slice(0, index),
+  col.slice(index + 1)
+]
+
+const toRoseTree = (f) => (col) => RoseTree(
+  col.map(rvalue),
+  () => f(col)
+)
+
+const tuple = (trees) => {
+  const [shrunkTrees] = trees.reduce(([shrunkTrees, index], [_, children]) => {
+    const [a, b] = splitAt(trees, index)
+    shrunkTrees = children().reduce((shrunkTrees, child) => conj(shrunkTrees, a.concat([child]).concat(b)), shrunkTrees)
+    return [shrunkTrees, index + 1]
+  }, [[], 0])
+
+  return shrunkTrees.map(toRoseTree(tuple))
+}
 
 function* shrink(nextChildren, prop) {
   let children = nextChildren()
