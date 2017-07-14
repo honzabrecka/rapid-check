@@ -7,7 +7,7 @@ const {
   conj
 } = require('./core')
 
-const { roseify, RoseTree, rvalue } = require('./rosetree')
+const { RoseTree, rvalue } = require('./rosetree')
 
 // type ShrinkResult T = [boolean, RoseTree T]
 const ShrinkResult = (result, tree) => [result, tree]
@@ -16,6 +16,17 @@ const roundTowardZero = (x) =>
   x < 0
     ? Math.ceil(x)
     : Math.floor(x)
+
+function roseify(f) {
+  const toRoseTrees = (col, f) =>
+    col.map((v) => RoseTree(v, () => f(v)))
+
+  const roseified = (...args) => toRoseTrees(
+    f.apply(null, args),
+    (value) => roseified.apply(null, [value].concat(args.slice(1)))
+  )
+  return roseified
+}
 
 const int = roseify((n, center) => {
   const diff = (i) => (center - n) / Math.pow(2, i)
@@ -33,15 +44,18 @@ const splitAt = (col, index) => [
   col.slice(index + 1)
 ]
 
-const toRoseTree = (f) => (col) => RoseTree(
-  col.map(rvalue),
-  () => f(col)
-)
-
 const tuple = (trees) => {
+  const toRoseTree = (f) => (col) => RoseTree(
+    col.map(rvalue),
+    () => f(col)
+  )
+
   const [shrunkTrees] = trees.reduce(([shrunkTrees, index], [_, children]) => {
     const [a, b] = splitAt(trees, index)
-    shrunkTrees = children().reduce((shrunkTrees, child) => conj(shrunkTrees, a.concat([child]).concat(b)), shrunkTrees)
+    shrunkTrees = children().reduce((shrunkTrees, child) =>
+      conj(shrunkTrees, a.concat([child]).concat(b)),
+      shrunkTrees
+    )
     return [shrunkTrees, index + 1]
   }, [[], 0])
 
