@@ -18,8 +18,8 @@ const roundTowardZero = (x) =>
     : Math.floor(x)
 
 function roseify(f) {
-  const toRoseTrees = (col, f) =>
-    col.map((v) => RoseTree(v, () => f(v)))
+  const toRoseTrees = (values, f) =>
+    values.map((value) => RoseTree(value, () => f(value)))
 
   const roseified = (...args) => toRoseTrees(
     f.apply(null, args),
