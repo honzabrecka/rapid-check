@@ -10,9 +10,17 @@ const fmap = (f, [value, children]) => RoseTree(
   () => children().map((child) => fmap(f, child))
 )
 
+const flatten = ([[value, innerChildren], children]) => RoseTree(
+  value,
+  () => children().map(flatten).concat(innerChildren())
+)
+
+const mbind = (tree, f) => flatten(fmap(f, tree))
+
 module.exports = {
   RoseTree,
   rvalue,
   rchildren,
   fmap,
+  mbind,
 }

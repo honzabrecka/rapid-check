@@ -14,6 +14,7 @@ const {
   int,
   uint,
   tuple,
+  oneOf,
   fmap
 } = require('../generators')
 
@@ -195,6 +196,17 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(fmap(f, uint), prop, 2000000)
     expect(result).toBe(false)
     expect(value).toBe(-598325)
+    // expect(attempts).toBe(9)
+    // expect(shrinks).toBe(1)
+  })
+
+  it('gen.oneOf shrinking', () => {
+    const prop = (v) => v < 29
+    const f = (n) => -n
+    const good = fmap(f, uint)
+    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(good, good, good, good, uint), prop)
+    expect(result).toBe(false)
+    expect(value).toBe(29)
     // expect(attempts).toBe(9)
     // expect(shrinks).toBe(1)
   })

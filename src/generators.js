@@ -17,6 +17,11 @@ const uint = (rng, size) => choose(0, size)(rng, size)
 
 const fmap = (f, gen) => (rng, size) => rosetree.fmap(f, gen(rng, size))
 
+const mbind = (gen, f) => (rng, size) => rosetree.mbind(
+  gen(rng, size),
+  (value) => f(value)(rng, size)
+)
+
 const tuple = (...gens) => (rng, size) => {
   const elements = gens.map((gen) => gen(rng, size))
   return RoseTree(
@@ -25,6 +30,11 @@ const tuple = (...gens) => (rng, size) => {
   )
 }
 
+const oneOf = (...gens) => mbind(
+  choose(0, gens.length - 1),
+  (i) => gens[i]
+)
+
 module.exports = {
   constantly,
   choose,
@@ -32,6 +42,8 @@ module.exports = {
   uint,
   //
   tuple,
+  oneOf,
   //
   fmap,
+  mbind,
 }
