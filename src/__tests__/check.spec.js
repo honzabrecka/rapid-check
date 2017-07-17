@@ -18,6 +18,15 @@ const {
   fmap
 } = require('../generators')
 
+const negate = (n) => -n
+
+const negative = fmap(negate, uint)
+
+it('negates given number', () => {
+  expect(negate(3)).toBe(-3)
+  expect(negate(-3)).toBe(3)
+})
+
 describe('sample', () => {
   it('gen.constantly', () => {
     const foo = { foo: 'bar' }
@@ -89,9 +98,8 @@ describe('forAll preserves gen type', () => {
   })
 
   it('gen.fmap type', () => {
-    const f = (n) => -n
     const prop = (v) => Number.isInteger(v) && v <= 0
-    const [result, _] = forAll(fmap(f, uint), prop)
+    const [result, _] = forAll(fmap(negate, uint), prop)
     expect(result).toBe(true)
   })
 })
@@ -172,8 +180,7 @@ describe('forAll shrinking', () => {
 
   it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', () => {
     const prop = ([a]) => a > -29
-    const f = (n) => -n
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(fmap(f, uint)), prop)
+    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(negative), prop)
     expect(result).toBe(false)
     expect(value).toEqual([-29])
     // expect(attempts).toBe(4)
@@ -181,9 +188,8 @@ describe('forAll shrinking', () => {
   })
 
   it('gen.fmap shrinking', () => {
-    const f = (n) => -n
     const prop = (v) => v > -28
-    const [result, [[value, _], attempts, shrinks]] = forAll(fmap(f, uint), prop)
+    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop)
     expect(result).toBe(false)
     expect(value).toBe(-28)
     // expect(attempts).toBe(9)
@@ -191,9 +197,8 @@ describe('forAll shrinking', () => {
   })
 
   it('gen.fmap shrinking', () => {
-    const f = (n) => -n
     const prop = (v) => v > -598325
-    const [result, [[value, _], attempts, shrinks]] = forAll(fmap(f, uint), prop, 2000000)
+    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop, 2000000)
     expect(result).toBe(false)
     expect(value).toBe(-598325)
     // expect(attempts).toBe(9)
@@ -202,11 +207,28 @@ describe('forAll shrinking', () => {
 
   it('gen.oneOf shrinking', () => {
     const prop = (v) => v < 29
-    const f = (n) => -n
-    const good = fmap(f, uint)
-    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(good, good, good, good, uint), prop)
+    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(negative, negative, uint), prop)
     expect(result).toBe(false)
     expect(value).toBe(29)
+    // expect(attempts).toBe(9)
+    // expect(shrinks).toBe(1)
+  })
+
+  it('gen.oneOf shrinking', () => {
+    const prop = (v) => {
+      console.log(v)
+      if (v.length !== 3) return true
+      const [a, b, c] = v
+      return !(a >= 29 && b >= 43 && c>= 7)
+    }
+    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(
+      tuple(negative, negative, negative),
+      tuple(uint, negative),
+      tuple(uint, uint, uint),// <-
+      tuple(uint)
+    ), prop, 500)
+    expect(result).toBe(false)
+    expect(value).toBe([29, 43, 7])
     // expect(attempts).toBe(9)
     // expect(shrinks).toBe(1)
   })
