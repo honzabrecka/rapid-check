@@ -228,7 +228,7 @@ describe('forAll shrinking', () => {
       tuple(uint)
     ), prop, 500)
     expect(result).toBe(false)
-    expect(value).toBe([29, 43, 7])
+    expect(value).toEqual([29, 43, 7])
     // expect(attempts).toBe(9)
     // expect(shrinks).toBe(1)
   })
