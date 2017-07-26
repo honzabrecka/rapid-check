@@ -14,6 +14,7 @@ const {
   int,
   uint,
   tuple,
+  bool,
   oneOf,
   fmap
 } = require('../generators')
@@ -59,6 +60,13 @@ describe('sample', () => {
     const samples = sample(rng, fmap(f, uint))
     samples.forEach(([value, _]) =>
       expect(Number.isInteger(value) && value <= 0).toBe(true))
+  })
+
+  it('gen.bool', () => {
+    const bools = new Set([true, false])
+    const samples = sample(rng, bool)
+    samples.forEach(([value, _]) =>
+      expect(bools.has(value)).toBe(true))
   })
 })
 
