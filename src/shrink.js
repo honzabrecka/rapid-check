@@ -29,14 +29,15 @@ function roseify(f) {
 }
 
 const int = roseify((n, center) => {
-  const diff = (i) => (center - n) / Math.pow(2, i)
-  return intoArray(
-    comp(
-      takeWhile((i) => Math.abs(diff(i)) >= 1),
-      map((i) => n + roundTowardZero(diff(i))),
-    ),
-    range(0, Number.MAX_VALUE)
-  )
+  let diff = center - n
+  let result = []
+
+  while (Math.abs(diff) >= 1) {
+    result.push(n + roundTowardZero(diff))
+    diff = diff * 0.5
+  }
+
+  return result
 })
 
 const splitAt = (col, index) => [
