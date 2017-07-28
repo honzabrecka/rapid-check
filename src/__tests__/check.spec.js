@@ -224,7 +224,6 @@ describe('forAll shrinking', () => {
 
   it('gen.oneOf shrinking', () => {
     const prop = (v) => {
-      console.log(v)
       if (v.length !== 3) return true
       const [a, b, c] = v
       return !(a >= 29 && b >= 43 && c>= 7)
