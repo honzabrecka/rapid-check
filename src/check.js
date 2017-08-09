@@ -36,16 +36,21 @@ function shrinkFailing(tree, prop) {
   )(shrink(tree[1], prop))
 }
 
-const forAll = (gen, prop, count = defaultForAllCount) => transduce(
-  comp(
-    map((sample) => [prop(sample[0]), sample]),
-    map(([result, sample]) => [result, result ? sample : shrinkFailing(sample, prop)]),
-    takeWhile(([result, _]) => result === true, true)
-  ),
-  ([prevResult, _], [currentResult, sample]) => [prevResult && currentResult, sample],
-  [true, null],
-  sampleG(rng(), gen, count)
-)
+const forAll = (gen, prop, count = defaultForAllCount) => {
+  const samples = sampleG(rng(), gen, count)
+  let sample
+  let result
+
+  while (!(sample = samples.next()).done) {
+    sample = sample.value
+    result = prop(sample[0])
+
+    if (!result)
+      return [false, shrinkFailing(sample, prop)]
+  }
+
+  return [true, sample]
+}
 
 module.exports = {
   sample,
