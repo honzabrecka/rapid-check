@@ -52,7 +52,28 @@ const forAll = (gen, prop, count = defaultForAllCount) => {
   return [true, sample]
 }
 
+const delay = (time) => new Promise((resolve, _) => {
+  setTimeout(() => resolve(), time)
+})
+
+const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
+  const samples = sampleG(rng(), gen, count)
+  let sample
+  let result
+
+  while (!(sample = samples.next()).done) {
+    sample = sample.value
+    result = await delay(10).then(() => prop(sample[0]))
+
+    if (!result)
+      return [false, shrinkFailing(sample, prop)]
+  }
+
+  return [true, sample]
+}
+
 module.exports = {
   sample,
   forAll,
+  asyncForAll,
 }
