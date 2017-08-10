@@ -24,6 +24,9 @@ function* sampleG(rng, gen, count = defaultSampleCount) {
 const sample = (gen, count = defaultSampleCount) =>
   intoArray(identity, sampleG(rng(), gen, count))
 
+const sampleV = (gen, count = defaultSampleCount) =>
+  intoArray(map(([v, _]) => v), sampleG(rng(), gen, count))
+
 function shrinkFailing(tree, prop) {
   return reduce(
     ([reduced, [lastFailingNode, attempts, shrinks]], [result, node]) =>
@@ -74,6 +77,7 @@ const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
 
 module.exports = {
   sample,
+  sampleV,
   forAll,
   asyncForAll,
 }
