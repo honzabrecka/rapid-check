@@ -1,4 +1,5 @@
 const {
+  ap,
   comp,
   identity,
   complement,
@@ -10,6 +11,11 @@ const {
   even,
   conj
 } = require('../core')
+
+it('applies args to function', () => {
+  const f = (a, b, c) => a + b + c
+  expect(ap(f, [1, 2, 3])).toBe(6)
+})
 
 it('comp executes fns from right', () => {
   expect(comp((n) => n * 4, (n) => n + 3)(2)).toBe(20)

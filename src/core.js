@@ -33,6 +33,8 @@ function takeWhile(f, x = false) {
   }
 }
 
+const ap = (f, args) => f.apply(null, args)
+
 const comp = (...fns) => (v) => fns.reduceRight((r, f) => f(r), v)
 
 const identity = (v) => v
@@ -85,6 +87,7 @@ module.exports = {
   intoArray,
   dorun,
   //
+  ap,
   comp,
   identity,
   complement,
