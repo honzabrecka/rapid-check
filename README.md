@@ -2,7 +2,7 @@
 
 Yet another implementation of property based testing framework with support for async properties.
 
-# Usage
+## Usage
 
 Works with any testing framework, here's example using [jest](https://facebook.github.io/jest/):
 
@@ -22,58 +22,58 @@ it('tests async Set.has function', async () => {
 })
 ```
 
-# Generators
+## Generators
 
-## constantly(any)
+### constantly(any)
 
 ```js
 sample(constantly(4))
 // [4, 4, 4, 4, ...]
 ```
 
-## choose(min, max)
+### choose(min, max)
 
 ```js
 sample(choose(1, 3))
 // [2, 1, 3, 1, ...]
 ```
 
-## bool
+### bool
 
 ```js
 sample(bool)
 // [true, true, false, true, ...]
 ```
 
-## int
+### int
 
 ```js
 sample(int)
 // [0, 1, -2, 3, ...]
 ```
 
-## uint
+### uint
 
 ```js
 sample(uint)
 // [0, 1, 0, 3, ...]
 ```
 
-## tuple(...gens)
+### tuple(...gens)
 
 ```js
 sample(tuple(uint, uint))
 // [[0, 0], [1, 0], [1, 2], [0, 1], ...]
 ```
 
-## oneOf(...gens)
+### oneOf(...gens)
 
 ```js
 sample(oneOf(bool, uint))
 // [true, 1, 2, false, ...]
 ```
 
-## fmap(f, gen)
+### fmap(f, gen)
 
 Where f: `a -> b`
 
@@ -83,7 +83,7 @@ sample(fmap(negate, uint))
 // [0, -1, -1, -3, ...]
 ```
 
-## mbind(f, gen)
+### mbind(f, gen)
 
 Where f: `a -> Gen b`
 
