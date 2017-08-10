@@ -52,10 +52,6 @@ const forAll = (gen, prop, count = defaultForAllCount) => {
   return [true, sample]
 }
 
-const delay = (time) => new Promise((resolve, _) => {
-  setTimeout(() => resolve(), time)
-})
-
 const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
   const samples = sampleG(rng(), gen, count)
   let sample
@@ -63,7 +59,7 @@ const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
 
   while (!(sample = samples.next()).done) {
     sample = sample.value
-    result = await delay(10).then(() => prop(sample[0]))
+    result = await prop(sample[0])
 
     if (!result)
       return [false, shrinkFailing(sample, prop)]
