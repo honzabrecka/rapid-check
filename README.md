@@ -52,7 +52,7 @@ sample(int)
 // [0, 1, -2, 3, ...]
 ```
 
-## uint
+## uint
 
 ```js
 sample(uint)
