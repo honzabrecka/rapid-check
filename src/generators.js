@@ -37,13 +37,14 @@ const oneOf = (...gens) => mbind(
 const bool = oneOf(constantly(true), constantly(false))
 
 const consequence = (seq, id) => (rng, size) => {
-  const $id = typeof id === 'function' ? id() : id
+  const $id = id()
   const conseq = seq.reduce(([r, i, p], v) => {
-    v = Array.isArray(v) ? consequenceN(v, $id) : v($id)
+    v = Array.isArray(v) ? consequenceN(v, () => $id) : v($id)
+    const nv = p.concat([v])
     return [
-      r.concat([p.concat([v])]),
+      r.concat([nv]),
       i + 1,
-      p.concat([v])
+      nv
     ]
   }, [[[]], 0, []])[0]
   const m = conseq.map((s) => ap(tuple, s))
