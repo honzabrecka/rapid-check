@@ -4,6 +4,7 @@ const {
   transduce,
   intoArray,
   dorun,
+  repeat,
   comp,
   map,
   filter,
@@ -141,4 +142,13 @@ describe('fns', () => {
     expect(intoArray(xf, range(1, 5))).toEqual([1, 2])
     expect(f).toHaveBeenCalledTimes(3)
   })
+})
+
+it('repeat', () => {
+  expect(repeat('foo', 4)).toEqual([
+    'foo',
+    'foo',
+    'foo',
+    'foo',
+  ])
 })

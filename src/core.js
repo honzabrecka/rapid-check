@@ -75,6 +75,8 @@ const intoArray = (xf, col) => transduce(xf, conj, [], col)
 
 const dorun = (xf, col) => transduce(xf, identity, null, col)
 
+const repeat = (v, n) => intoArray(map((_) => v), range(0, n - 1))
+
 module.exports = {
   range,
   map,
@@ -86,6 +88,7 @@ module.exports = {
   transduce,
   intoArray,
   dorun,
+  repeat,
   //
   ap,
   comp,
