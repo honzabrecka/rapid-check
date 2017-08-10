@@ -1,4 +1,4 @@
-function generate(seq, bef = []) {
+function generate(seq) {
   return seq.reduce(([r, i, p], v) => {
     v = Array.isArray(v) ? generate(v) : v
     return [
