@@ -2,7 +2,9 @@
 
 Yet another implementation of property based testing framework with support for async properties.
 
-# Use
+# Usage
+
+Works with any testing framework, here's example using [jest](https://facebook.github.io/jest/):
 
 ```js
 it('tests Set.has function', () => {
