@@ -32,40 +32,40 @@ describe('sample', () => {
   it('gen.constantly', () => {
     const foo = { foo: 'bar' }
     const samples = sample(rng, constantly(foo))
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(value).toBe(foo))
   })
 
   it('gen.choose', () => {
     const samples = sample(rng, choose(1, 3))
     const s = new Set([1, 2, 3])
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(s.has(value)).toBe(true))
   })
 
   it('gen.int', () => {
     const samples = sample(rng, int)
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(Number.isInteger(value)).toBe(true))
   })
 
   it('gen.uint', () => {
     const samples = sample(rng, uint)
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(Number.isInteger(value) && value >= 0).toBe(true))
   })
 
   it('gen.fmap', () => {
     const f = (n) => -n
     const samples = sample(rng, fmap(f, uint))
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(Number.isInteger(value) && value <= 0).toBe(true))
   })
 
   it('gen.bool', () => {
     const bools = new Set([true, false])
     const samples = sample(rng, bool)
-    samples.forEach(([value, _]) =>
+    samples.forEach((value) =>
       expect(bools.has(value)).toBe(true))
   })
 })
