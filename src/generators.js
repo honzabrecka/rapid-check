@@ -36,6 +36,11 @@ const oneOf = (...gens) => mbind(
 
 const bool = oneOf(constantly(true), constantly(false))
 
+const array = (gen, min = 0, max = Number.MAX_VALUE) => (rng, size) => mbind(
+  (count) => ap(tuple, repeat(gen, count)),
+  choose(min, Math.min(max, size))
+)(rng, size)
+
 const consequence = (seq, id) => (rng, size) => {
   const $id = id()
   const conseq = seq.reduce(([r, i, p], v) => {
@@ -71,6 +76,7 @@ module.exports = {
   bool,
   //
   tuple,
+  array,
   oneOf,
   //
   fmap,

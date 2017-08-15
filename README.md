@@ -66,6 +66,13 @@ sample(tuple(uint, uint))
 // [[0, 0], [1, 0], [1, 2], [0, 1], ...]
 ```
 
+### array(gen, min, max)
+
+```js
+sample(array(uint, 1, 3))
+// [[0], [1], [2, 0], [1, 1], [0], [0, 3, 3], ...]
+```
+
 ### oneOf(...gens)
 
 ```js
