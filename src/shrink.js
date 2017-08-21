@@ -84,9 +84,31 @@ function* shrink(nextChildren, prop) {
   }
 }
 
+function* asyncShrink(nextChildren, prop) {
+  let children = nextChildren()
+  let i = 0
+  let result
+  let value
+
+  while (i < children.length) {
+    [value, nextChildren] = children[i]
+    result = yield prop(value)
+
+    if (result) {
+      i++
+    } else {
+      i = 0
+      children = nextChildren()
+    }
+
+    yield ShrinkResult(result, RoseTree(value, nextChildren))
+  }
+}
+
 module.exports = {
   roundTowardZero,
   int,
   tuple,
   shrink,
+  asyncShrink,
 }

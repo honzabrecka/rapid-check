@@ -10,7 +10,7 @@ const {
   comp
 } = require('./core')
 
-const { shrink } = require('./shrink')
+const { shrink, asyncShrink } = require('./shrink')
 
 const defaultSampleCount = 10
 
@@ -34,6 +34,27 @@ function shrinkFailing(tree, prop) {
       ]],
     [tree, 0, 0]
   )(shrink(tree[1], prop))
+}
+
+async function asyncShrinkFailing(tree, prop) {
+  const gen = asyncShrink(tree[1], prop)
+  let current
+  let result
+  let reduced = [tree, 0, 0]
+  let node
+
+  while (!(current = gen.next()).done) {
+    result = await current.value;
+    [result, node] = gen.next(result).value
+
+    reduced = [
+      result ? reduced[0] : node,
+      reduced[1] + 1,
+      reduced[2] + (result ? 0 : 1)
+    ]
+  }
+
+  return reduced
 }
 
 const forAll = (gen, prop, count = defaultForAllCount) => {
@@ -62,7 +83,7 @@ const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
     result = await prop(sample[0])
 
     if (!result)
-      return [false, shrinkFailing(sample, prop)]
+      return [false, await asyncShrinkFailing(sample, prop)]
   }
 
   return [true, sample]
