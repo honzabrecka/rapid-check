@@ -1,6 +1,6 @@
 {
-  "name": "rapid",
-  "version": "0.0.1",
+  "name": "rapid-check",
+  "version": "0.1.0",
   "main": "src/index.js",
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
