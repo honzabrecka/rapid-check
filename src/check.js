@@ -60,7 +60,8 @@ async function asyncShrinkFailing(tree, prop) {
 }
 
 const forAll = (gen, prop, { count, seed } = {}) => {
-  const samples = sampleG(rng(seed = timestamp()), gen, count || defaultForAllCount)
+  seed = seed || timestamp()
+  const samples = sampleG(rng(seed), gen, count || defaultForAllCount)
   let sample
   let result
 
@@ -69,14 +70,15 @@ const forAll = (gen, prop, { count, seed } = {}) => {
     result = prop(sample[0])
 
     if (!result)
-      return [false, shrinkFailing(sample, prop)]
+      return [false, shrinkFailing(sample, prop), seed]
   }
 
-  return [true, sample]
+  return [true, sample, seed]
 }
 
 const asyncForAll = async (gen, prop, { count, seed }= {}) => {
-  const samples = sampleG(rng(seed || timestamp()), gen, count || defaultForAllCount)
+  seed = seed || timestamp()
+  const samples = sampleG(rng(seed), gen, count || defaultForAllCount)
   let sample
   let result
 
@@ -85,10 +87,10 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
     result = await prop(sample[0])
 
     if (!result)
-      return [false, await asyncShrinkFailing(sample, prop)]
+      return [false, await asyncShrinkFailing(sample, prop), seed]
   }
 
-  return [true, sample]
+  return [true, sample, seed]
 }
 
 module.exports = {

@@ -5,7 +5,8 @@ const {
 const {
   rng,
   sample,
-  forAll
+  forAll,
+  asyncForAll
 } = require('../check')
 
 const {
@@ -211,5 +212,31 @@ describe('forAll shrinking', () => {
     ), prop, { count: 500 })
     expect(result).toBe(false)
     expect(value).toEqual([29, 43, 7])
+  })
+})
+
+describe('seed', () => {
+  it('forAll (success)', () => {
+    const seedIn = 10
+    const [,, seedOut] = forAll(uint, (_) => true, { seed: seedIn })
+    expect(seedOut).toBe(seedIn)
+  })
+
+  it('forAll (fail)', () => {
+    const seedIn = 10
+    const [,, seedOut] = forAll(uint, (_) => false, { seed: seedIn })
+    expect(seedOut).toBe(seedIn)
+  })
+
+  it('asyncForAll (success)', async () => {
+    const seedIn = 10
+    const [,, seedOut] = await asyncForAll(uint, (_) => true, { seed: seedIn })
+    expect(seedOut).toBe(seedIn)
+  })
+
+  it('asyncForAll (fail)', async () => {
+    const seedIn = 10
+    const [,, seedOut] = await asyncForAll(uint, (_) => false, { seed: seedIn })
+    expect(seedOut).toBe(seedIn)
   })
 })
