@@ -8,6 +8,6 @@
     "random-js": "^1.0.8"
   },
   "devDependencies": {
-    "jest": "^20.0.4"
+    "jest": "^21.2.1"
   }
 }
