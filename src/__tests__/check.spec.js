@@ -119,8 +119,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(constantly(foo), prop)
     expect(result).toBe(false)
     expect(value).toBe(foo)
-    // expect(attempts).toBe(0)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.choose shrinking', () => {
@@ -128,8 +126,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(choose(1, 10), prop)
     expect(result).toBe(false)
     expect(value).toBe(8)
-    // expect(attempts).toBe(3)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.int shrinking', () => {
@@ -137,8 +133,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(int, prop)
     expect(result).toBe(false)
     expect(value).toBe(8)
-    // expect(attempts).toBe(10)
-    // expect(shrinks).toBe(1)
   })
 
   it('gen.uint shrinking', () => {
@@ -146,8 +140,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(uint, prop)
     expect(result).toBe(false)
     expect(value).toBe(8)
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.tuple(gen.uint) shrinking', () => {
@@ -155,8 +147,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint), prop)
     expect(result).toBe(false)
     expect(value).toEqual([29])
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
@@ -164,8 +154,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
     expect(result).toBe(false)
     expect(value).toEqual([9, 12])
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
@@ -173,8 +161,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
     expect(result).toBe(false)
     expect(value).toEqual([29, 0])
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
@@ -182,8 +168,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
     expect(result).toBe(false)
     expect(value).toEqual([0, 29])
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', () => {
@@ -191,8 +175,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(tuple(negative), prop)
     expect(result).toBe(false)
     expect(value).toEqual([-29])
-    // expect(attempts).toBe(4)
-    // expect(shrinks).toBe(0)
   })
 
   it('gen.fmap shrinking', () => {
@@ -200,8 +182,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop)
     expect(result).toBe(false)
     expect(value).toBe(-28)
-    // expect(attempts).toBe(9)
-    // expect(shrinks).toBe(1)
   })
 
   it('gen.fmap shrinking', () => {
@@ -209,8 +189,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop, 2000000)
     expect(result).toBe(false)
     expect(value).toBe(-598325)
-    // expect(attempts).toBe(9)
-    // expect(shrinks).toBe(1)
   })
 
   it('gen.oneOf shrinking', () => {
@@ -218,8 +196,6 @@ describe('forAll shrinking', () => {
     const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(negative, negative, uint), prop)
     expect(result).toBe(false)
     expect(value).toBe(29)
-    // expect(attempts).toBe(9)
-    // expect(shrinks).toBe(1)
   })
 
   it('gen.oneOf shrinking', () => {
@@ -236,7 +212,5 @@ describe('forAll shrinking', () => {
     ), prop, 500)
     expect(result).toBe(false)
     expect(value).toEqual([29, 43, 7])
-    // expect(attempts).toBe(9)
-    // expect(shrinks).toBe(1)
   })
 })

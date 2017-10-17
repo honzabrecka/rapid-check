@@ -31,7 +31,3 @@ const realize = (trees) => trees.map(([value, children]) => ({
 it('int', () => {
   expect(realize(int(5, 0))).toMatchSnapshot()
 })
-
-// it('tuple(uint)', () => {
-//   expect(realize(tuple([gen.uint(rng(), 3)]))).toBe(false)
-// })

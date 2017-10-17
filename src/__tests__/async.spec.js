@@ -44,6 +44,4 @@ it('gen.fmap shrinking', async () => {
   const [result, [[value, _], attempts, shrinks]] = await asyncForAll(negative, prop)
   expect(result).toBe(false)
   expect(value).toBe(-28)
-  // expect(attempts).toBe(9)
-  // expect(shrinks).toBe(1)
 })
