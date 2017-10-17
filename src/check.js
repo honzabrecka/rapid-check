@@ -16,13 +16,15 @@ const defaultSampleCount = 10
 
 const defaultForAllCount = 100
 
+const timestamp = () => +new Date()
+
 function* sampleG(rng, gen, count = defaultSampleCount) {
   for (let i = 0; i < count; i++)
     yield gen(rng, Math.floor(i / 2) + 1)
 }
 
 const sample = (gen, count = defaultSampleCount) =>
-  intoArray(map(([v, _]) => v), sampleG(rng(), gen, count))
+  intoArray(map(([v, _]) => v), sampleG(rng(timestamp()), gen, count))
 
 function shrinkFailing(tree, prop) {
   return reduce(
@@ -58,7 +60,7 @@ async function asyncShrinkFailing(tree, prop) {
 }
 
 const forAll = (gen, prop, count = defaultForAllCount) => {
-  const samples = sampleG(rng(), gen, count)
+  const samples = sampleG(rng(timestamp()), gen, count)
   let sample
   let result
 
@@ -74,7 +76,7 @@ const forAll = (gen, prop, count = defaultForAllCount) => {
 }
 
 const asyncForAll = async (gen, prop, count = defaultForAllCount) => {
-  const samples = sampleG(rng(), gen, count)
+  const samples = sampleG(rng(timestamp()), gen, count)
   let sample
   let result
 
