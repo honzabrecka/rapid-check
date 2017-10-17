@@ -56,8 +56,7 @@ describe('sample', () => {
   })
 
   it('gen.fmap', () => {
-    const f = (n) => -n
-    const samples = sample(rng, fmap(f, uint))
+    const samples = sample(rng, fmap(negate, uint))
     samples.forEach((value) =>
       expect(Number.isInteger(value) && value <= 0).toBe(true))
   })
