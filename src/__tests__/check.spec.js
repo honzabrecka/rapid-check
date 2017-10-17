@@ -185,7 +185,7 @@ describe('forAll shrinking', () => {
 
   it('gen.fmap shrinking', () => {
     const prop = (v) => v > -598325
-    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop, 2000000)
+    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop, { count: 2000000 })
     expect(result).toBe(false)
     expect(value).toBe(-598325)
   })
@@ -208,7 +208,7 @@ describe('forAll shrinking', () => {
       tuple(uint, negative),
       tuple(uint, uint, uint),// <-
       tuple(uint)
-    ), prop, 500)
+    ), prop, { count: 500 })
     expect(result).toBe(false)
     expect(value).toEqual([29, 43, 7])
   })
