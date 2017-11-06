@@ -84,7 +84,7 @@ function* shrink(nextChildren, prop) {
   }
 }
 
-function* asyncShrink(nextChildren, prop) {
+async function* asyncShrink(nextChildren, prop) {
   let children = nextChildren()
   let i = 0
   let result
@@ -92,7 +92,7 @@ function* asyncShrink(nextChildren, prop) {
 
   while (i < children.length) {
     [value, nextChildren] = children[i]
-    result = yield prop(value)
+    result = await prop(value)
 
     if (result) {
       i++

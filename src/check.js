@@ -45,16 +45,9 @@ function shrinkFailing(tree, prop) {
 }
 
 async function asyncShrinkFailing(tree, prop) {
-  const gen = asyncShrink(tree[1], prop)
-  let current
-  let result
   let reduced = [tree, 0, 0]
-  let node
 
-  while (!(current = gen.next()).done) {
-    result = await current.value;
-    [result, node] = gen.next(result).value
-
+  for await (const [result, node] of asyncShrink(tree[1], prop)) {
     reduced = [
       result ? reduced[0] : node,
       reduced[1] + 1,
