@@ -2,9 +2,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: mhart/alpine-node:8.1.4
+      - image: mhart/alpine-node:9.0.0
     working_directory: ~/repo
     steps:
       - checkout
       - run: yarn install
-      - run: yarn jest
+      - run: node --harmony ./node_modules/.bin/jest
