@@ -41,7 +41,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000
 
 it('gen.fmap shrinking', async () => {
   const prop = (v) => d(10, v > -28)
-  const { success, shrink: [[value, _], attempts, shrinks] } = await asyncForAll(negative, prop)
+  const { success, shrink: { min } } = await asyncForAll(negative, prop)
   expect(success).toBe(false)
-  expect(value).toBe(-28)
+  expect(min).toBe(-28)
 })

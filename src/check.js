@@ -26,6 +26,12 @@ function* sampleG(rng, gen, count = defaultSampleCount) {
 const sample = (gen, count = defaultSampleCount) =>
   intoArray(map(([v, _]) => v), sampleG(rng(timestamp()), gen, count))
 
+const shrinkTupleToMap = ([[min, _], attempts, shrinks]) => ({
+  min,
+  attempts,
+  shrinks,
+})
+
 function shrinkFailing(tree, prop) {
   return reduce(
     ([reduced, [lastFailingNode, attempts, shrinks]], [result, node]) =>
@@ -73,7 +79,7 @@ const forAll = (gen, prop, { count, seed } = {}) => {
       return {
         success: false,
         seed,
-        shrink: shrinkFailing(sample, prop),
+        shrink: shrinkTupleToMap(shrinkFailing(sample, prop)),
       }
   }
 
@@ -94,7 +100,7 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
       return {
         success: false,
         seed,
-        shrink: await asyncShrinkFailing(sample, prop),
+        shrink: shrinkTupleToMap(await asyncShrinkFailing(sample, prop)),
       }
   }
 
