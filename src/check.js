@@ -70,10 +70,14 @@ const forAll = (gen, prop, { count, seed } = {}) => {
     result = prop(sample[0])
 
     if (!result)
-      return [false, shrinkFailing(sample, prop), seed]
+      return {
+        success: false,
+        seed,
+        shrink: shrinkFailing(sample, prop),
+      }
   }
 
-  return [true, sample, seed]
+  return { success: true, seed }
 }
 
 const asyncForAll = async (gen, prop, { count, seed }= {}) => {
@@ -87,10 +91,14 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
     result = await prop(sample[0])
 
     if (!result)
-      return [false, await asyncShrinkFailing(sample, prop), seed]
+      return {
+        success: false,
+        seed,
+        shrink: await asyncShrinkFailing(sample, prop),
+      }
   }
 
-  return [true, sample, seed]
+  return { success: true, seed }
 }
 
 module.exports = {

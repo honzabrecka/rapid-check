@@ -74,41 +74,41 @@ describe('forAll preserves gen type', () => {
   it('gen.constantly type', () => {
     const foo = { foo: 'bar' }
     const prop = (v) => v === foo
-    const [result, _] = forAll(constantly(foo), prop)
-    expect(result).toBe(true)
+    const { success } = forAll(constantly(foo), prop)
+    expect(success).toBe(true)
   })
 
   it('gen.choose type', () => {
     const s = new Set([1, 2, 3])
     const prop = (v) => s.has(v)
-    const [result, _] = forAll(choose(1, 3), prop)
-    expect(result).toBe(true)
+    const { success } = forAll(choose(1, 3), prop)
+    expect(success).toBe(true)
   })
 
   it('gen.int type', () => {
     const prop = (v) => Number.isInteger(v)
-    const [result, _] = forAll(int, prop)
-    expect(result).toBe(true)
+    const { success } = forAll(int, prop)
+    expect(success).toBe(true)
   })
 
   it('gen.uint type', () => {
     const prop = (v) => Number.isInteger(v) && v >= 0
-    const [result, _] = forAll(uint, prop)
-    expect(result).toBe(true)
+    const { success } = forAll(uint, prop)
+    expect(success).toBe(true)
   })
 
   it('gen.tuple type', () => {
     const s1 = new Set([1, 2, 3])
     const s2 = new Set([5, 6])
     const prop = ([a, b]) => s1.has(a) && s2.has(b)
-    const [result, _] = forAll(tuple(choose(1, 3), choose(5, 6)), prop)
-    expect(result).toBe(true)
+    const { success } = forAll(tuple(choose(1, 3), choose(5, 6)), prop)
+    expect(success).toBe(true)
   })
 
   it('gen.fmap type', () => {
     const prop = (v) => Number.isInteger(v) && v <= 0
-    const [result, _] = forAll(fmap(negate, uint), prop)
-    expect(result).toBe(true)
+    const { success } = forAll(fmap(negate, uint), prop)
+    expect(success).toBe(true)
   })
 })
 
@@ -116,85 +116,85 @@ describe('forAll shrinking', () => {
   it('gen.constantly shrinking', () => {
     const foo = { foo: 'bar' }
     const prop = (v) => v === 'whatever'
-    const [result, [[value, _], attempts, shrinks]] = forAll(constantly(foo), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(constantly(foo), prop)
+    expect(success).toBe(false)
     expect(value).toBe(foo)
   })
 
   it('gen.choose shrinking', () => {
     const prop = (v) => v < 8
-    const [result, [[value, _], attempts, shrinks]] = forAll(choose(1, 10), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(choose(1, 10), prop)
+    expect(success).toBe(false)
     expect(value).toBe(8)
   })
 
   it('gen.int shrinking', () => {
     const prop = (v) => v < 8
-    const [result, [[value, _], attempts, shrinks]] = forAll(int, prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(int, prop)
+    expect(success).toBe(false)
     expect(value).toBe(8)
   })
 
   it('gen.uint shrinking', () => {
     const prop = (v) => v < 8
-    const [result, [[value, _], attempts, shrinks]] = forAll(uint, prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(uint, prop)
+    expect(success).toBe(false)
     expect(value).toBe(8)
   })
 
   it('gen.tuple(gen.uint) shrinking', () => {
     const prop = ([a]) => a < 29
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(tuple(uint), prop)
+    expect(success).toBe(false)
     expect(value).toEqual([29])
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
     const prop = ([a, b]) => !(a >= 9 && b >= 12)
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(tuple(uint, uint), prop)
+    expect(success).toBe(false)
     expect(value).toEqual([9, 12])
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
     const prop = ([a, _]) => a < 29
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(tuple(uint, uint), prop)
+    expect(success).toBe(false)
     expect(value).toEqual([29, 0])
   })
 
   it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
     const prop = ([_, b]) => b < 29
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(uint, uint), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(tuple(uint, uint), prop)
+    expect(success).toBe(false)
     expect(value).toEqual([0, 29])
   })
 
   it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', () => {
     const prop = ([a]) => a > -29
-    const [result, [[value, _], attempts, shrinks]] = forAll(tuple(negative), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(tuple(negative), prop)
+    expect(success).toBe(false)
     expect(value).toEqual([-29])
   })
 
   it('gen.fmap shrinking', () => {
     const prop = (v) => v > -28
-    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(negative, prop)
+    expect(success).toBe(false)
     expect(value).toBe(-28)
   })
 
   it('gen.fmap shrinking', () => {
     const prop = (v) => v > -598325
-    const [result, [[value, _], attempts, shrinks]] = forAll(negative, prop, { count: 2000000 })
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(negative, prop, { count: 2000000 })
+    expect(success).toBe(false)
     expect(value).toBe(-598325)
   })
 
   it('gen.oneOf shrinking', () => {
     const prop = (v) => v < 29
-    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(negative, negative, uint), prop)
-    expect(result).toBe(false)
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(oneOf(negative, negative, uint), prop)
+    expect(success).toBe(false)
     expect(value).toBe(29)
   })
 
@@ -204,13 +204,13 @@ describe('forAll shrinking', () => {
       const [a, b, c] = v
       return !(a >= 29 && b >= 43 && c>= 7)
     }
-    const [result, [[value, _], attempts, shrinks]] = forAll(oneOf(
+    const { success, shrink: [[value, _], attempts, shrinks] } = forAll(oneOf(
       tuple(negative, negative, negative),
       tuple(uint, negative),
       tuple(uint, uint, uint),// <-
       tuple(uint)
     ), prop, { count: 500 })
-    expect(result).toBe(false)
+    expect(success).toBe(false)
     expect(value).toEqual([29, 43, 7])
   })
 })
@@ -218,25 +218,25 @@ describe('forAll shrinking', () => {
 describe('seed', () => {
   it('forAll (success)', () => {
     const seedIn = 10
-    const [,, seedOut] = forAll(uint, (_) => true, { seed: seedIn })
-    expect(seedOut).toBe(seedIn)
+    const { seed } = forAll(uint, (_) => true, { seed: seedIn })
+    expect(seed).toBe(seedIn)
   })
 
   it('forAll (fail)', () => {
     const seedIn = 10
-    const [,, seedOut] = forAll(uint, (_) => false, { seed: seedIn })
-    expect(seedOut).toBe(seedIn)
+    const { seed } = forAll(uint, (_) => false, { seed: seedIn })
+    expect(seed).toBe(seedIn)
   })
 
   it('asyncForAll (success)', async () => {
     const seedIn = 10
-    const [,, seedOut] = await asyncForAll(uint, (_) => true, { seed: seedIn })
-    expect(seedOut).toBe(seedIn)
+    const { seed } = await asyncForAll(uint, (_) => true, { seed: seedIn })
+    expect(seed).toBe(seedIn)
   })
 
   it('asyncForAll (fail)', async () => {
     const seedIn = 10
-    const [,, seedOut] = await asyncForAll(uint, (_) => false, { seed: seedIn })
-    expect(seedOut).toBe(seedIn)
+    const { seed } = await asyncForAll(uint, (_) => false, { seed: seedIn })
+    expect(seed).toBe(seedIn)
   })
 })
