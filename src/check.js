@@ -80,6 +80,7 @@ const forAll = (gen, prop, { count, seed } = {}) => {
         success: false,
         seed,
         shrink: shrinkTupleToMap(shrinkFailing(sample, prop)),
+        fail: sample,
       }
   }
 
@@ -101,6 +102,7 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
         success: false,
         seed,
         shrink: shrinkTupleToMap(await asyncShrinkFailing(sample, prop)),
+        fail: sample,
       }
   }
 
