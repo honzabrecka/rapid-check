@@ -16,14 +16,14 @@ Works with any testing framework, here's example using [jest](https://facebook.g
 it('tests Set.has function', () => {
   const s = new Set([1, 2, 3])
   const prop = (v) => s.has(v)
-  const [result, _] = forAll(choose(1, 3), prop)
+  const { success } = forAll(choose(1, 3), prop)
   expect(result).toBe(true)
 })
 
 it('tests async Set.has function', async () => {
   const s = new Set([1, 2, 3])
   const prop = (v) => Promise.resolve(s.has(v))
-  const [result, _] = await asyncForAll(choose(1, 3), prop)
+  const { success } = await asyncForAll(choose(1, 3), prop)
   expect(result).toBe(true)
 })
 ```
