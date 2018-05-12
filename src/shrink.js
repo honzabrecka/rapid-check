@@ -63,28 +63,7 @@ const tuple = (trees) => {
   return shrunkTrees.map(toRoseTree(tuple))
 }
 
-function* shrink(nextChildren, prop) {
-  let children = nextChildren()
-  let i = 0
-  let result
-  let value
-
-  while (i < children.length) {
-    [value, nextChildren] = children[i]
-    result = prop(value)
-
-    if (result) {
-      i++
-    } else {
-      i = 0
-      children = nextChildren()
-    }
-
-    yield ShrinkResult(result, RoseTree(value, nextChildren))
-  }
-}
-
-async function* asyncShrink(nextChildren, prop) {
+async function* shrink(nextChildren, prop) {
   let children = nextChildren()
   let i = 0
   let result
@@ -110,5 +89,4 @@ module.exports = {
   int,
   tuple,
   shrink,
-  asyncShrink,
 }

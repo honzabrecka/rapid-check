@@ -10,7 +10,7 @@ const {
   comp
 } = require('./core')
 
-const { shrink, asyncShrink } = require('./shrink')
+const { shrink } = require('./shrink')
 
 const defaultSampleCount = 10
 
@@ -32,22 +32,10 @@ const shrinkTupleToMap = ([[min, _], attempts, shrinks]) => ({
   shrinks,
 })
 
-function shrinkFailing(tree, prop) {
-  return reduce(
-    ([reduced, [lastFailingNode, attempts, shrinks]], [result, node]) =>
-      [reduced, [
-        result ? lastFailingNode : node,
-        attempts + 1,
-        shrinks + (result ? 0 : 1)
-      ]],
-    [tree, 0, 0]
-  )(shrink(tree[1], prop))
-}
-
-async function asyncShrinkFailing(tree, prop) {
+async function shrinkFailing(tree, prop) {
   let reduced = [tree, 0, 0]
 
-  for await (const [result, node] of asyncShrink(tree[1], prop)) {
+  for await (const [result, node] of shrink(tree[1], prop)) {
     reduced = [
       result ? reduced[0] : node,
       reduced[1] + 1,
@@ -58,29 +46,7 @@ async function asyncShrinkFailing(tree, prop) {
   return reduced
 }
 
-const forAll = (gen, prop, { count, seed } = {}) => {
-  seed = seed || timestamp()
-  const samples = sampleG(rng(seed), gen, count || defaultForAllCount)
-  let sample
-  let result
-
-  while (!(sample = samples.next()).done) {
-    sample = sample.value
-    result = prop(sample[0])
-
-    if (!result)
-      return {
-        success: false,
-        seed,
-        shrink: shrinkTupleToMap(shrinkFailing(sample, prop)),
-        fail: sample,
-      }
-  }
-
-  return { success: true, seed }
-}
-
-const asyncForAll = async (gen, prop, { count, seed }= {}) => {
+const forAll = async (gen, prop, { count, seed }= {}) => {
   seed = seed || timestamp()
   const samples = sampleG(rng(seed), gen, count || defaultForAllCount)
   let sample
@@ -94,7 +60,7 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
       return {
         success: false,
         seed,
-        shrink: shrinkTupleToMap(await asyncShrinkFailing(sample, prop)),
+        shrink: shrinkTupleToMap(await shrinkFailing(sample, prop)),
         fail: sample,
       }
   }
@@ -105,5 +71,4 @@ const asyncForAll = async (gen, prop, { count, seed }= {}) => {
 module.exports = {
   sample,
   forAll,
-  asyncForAll,
 }

@@ -13,17 +13,10 @@ npm install rapid-check
 Works with any testing framework, here's example using [jest](https://facebook.github.io/jest/):
 
 ```js
-it('tests Set.has function', () => {
+it('tests Set.has function', async () => {
   const s = new Set([1, 2, 3])
   const prop = (v) => s.has(v)
-  const { success } = forAll(choose(1, 3), prop)
-  expect(result).toBe(true)
-})
-
-it('tests async Set.has function', async () => {
-  const s = new Set([1, 2, 3])
-  const prop = (v) => Promise.resolve(s.has(v))
-  const { success } = await asyncForAll(choose(1, 3), prop)
+  const { success } = await forAll(choose(1, 3), prop)
   expect(result).toBe(true)
 })
 ```

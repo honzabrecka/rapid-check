@@ -6,7 +6,6 @@ const {
   rng,
   sample,
   forAll,
-  asyncForAll
 } = require('../check')
 
 const {
@@ -71,140 +70,140 @@ describe('sample', () => {
 })
 
 describe('forAll preserves gen type', () => {
-  it('gen.constantly type', () => {
+  it('gen.constantly type', async () => {
     const foo = { foo: 'bar' }
     const prop = (v) => v === foo
-    const { success } = forAll(constantly(foo), prop)
+    const { success } = await forAll(constantly(foo), prop)
     expect(success).toBe(true)
   })
 
-  it('gen.choose type', () => {
+  it('gen.choose type', async () => {
     const s = new Set([1, 2, 3])
     const prop = (v) => s.has(v)
-    const { success } = forAll(choose(1, 3), prop)
+    const { success } = await forAll(choose(1, 3), prop)
     expect(success).toBe(true)
   })
 
-  it('gen.int type', () => {
+  it('gen.int type', async () => {
     const prop = (v) => Number.isInteger(v)
-    const { success } = forAll(int, prop)
+    const { success } = await forAll(int, prop)
     expect(success).toBe(true)
   })
 
-  it('gen.uint type', () => {
+  it('gen.uint type', async () => {
     const prop = (v) => Number.isInteger(v) && v >= 0
-    const { success } = forAll(uint, prop)
+    const { success } = await forAll(uint, prop)
     expect(success).toBe(true)
   })
 
-  it('gen.tuple type', () => {
+  it('gen.tuple type', async () => {
     const s1 = new Set([1, 2, 3])
     const s2 = new Set([5, 6])
     const prop = ([a, b]) => s1.has(a) && s2.has(b)
-    const { success } = forAll(tuple(choose(1, 3), choose(5, 6)), prop)
+    const { success } = await forAll(tuple(choose(1, 3), choose(5, 6)), prop)
     expect(success).toBe(true)
   })
 
-  it('gen.fmap type', () => {
+  it('gen.fmap type', async () => {
     const prop = (v) => Number.isInteger(v) && v <= 0
-    const { success } = forAll(fmap(negate, uint), prop)
+    const { success } = await forAll(fmap(negate, uint), prop)
     expect(success).toBe(true)
   })
 })
 
 describe('forAll shrinking', () => {
-  it('gen.constantly shrinking', () => {
+  it('gen.constantly shrinking', async () => {
     const foo = { foo: 'bar' }
     const prop = (v) => v === 'whatever'
-    const { success, shrink: { min } } = forAll(constantly(foo), prop)
+    const { success, shrink: { min } } = await forAll(constantly(foo), prop)
     expect(success).toBe(false)
     expect(min).toBe(foo)
   })
 
-  it('gen.choose shrinking', () => {
+  it('gen.choose shrinking', async () => {
     const prop = (v) => v < 8
-    const { success, shrink: { min } } = forAll(choose(1, 10), prop)
+    const { success, shrink: { min } } = await forAll(choose(1, 10), prop)
     expect(success).toBe(false)
     expect(min).toBe(8)
   })
 
-  it('gen.int shrinking', () => {
+  it('gen.int shrinking', async () => {
     const prop = (v) => v < 8
-    const { success, shrink: { min } } = forAll(int, prop)
+    const { success, shrink: { min } } = await forAll(int, prop)
     expect(success).toBe(false)
     expect(min).toBe(8)
   })
 
-  it('gen.uint shrinking', () => {
+  it('gen.uint shrinking', async () => {
     const prop = (v) => v < 8
-    const { success, shrink: { min } } = forAll(uint, prop)
+    const { success, shrink: { min } } = await forAll(uint, prop)
     expect(success).toBe(false)
     expect(min).toBe(8)
   })
 
-  it('gen.tuple(gen.uint) shrinking', () => {
+  it('gen.tuple(gen.uint) shrinking', async () => {
     const prop = ([a]) => a < 29
-    const { success, shrink: { min } } = forAll(tuple(uint), prop)
+    const { success, shrink: { min } } = await forAll(tuple(uint), prop)
     expect(success).toBe(false)
     expect(min).toEqual([29])
   })
 
-  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+  it('gen.tuple(gen.uint, gen.uint) shrinking', async () => {
     const prop = ([a, b]) => !(a >= 9 && b >= 12)
-    const { success, shrink: { min } } = forAll(tuple(uint, uint), prop)
+    const { success, shrink: { min } } = await forAll(tuple(uint, uint), prop)
     expect(success).toBe(false)
     expect(min).toEqual([9, 12])
   })
 
-  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+  it('gen.tuple(gen.uint, gen.uint) shrinking', async () => {
     const prop = ([a, _]) => a < 29
-    const { success, shrink: { min } } = forAll(tuple(uint, uint), prop)
+    const { success, shrink: { min } } = await forAll(tuple(uint, uint), prop)
     expect(success).toBe(false)
     expect(min).toEqual([29, 0])
   })
 
-  it('gen.tuple(gen.uint, gen.uint) shrinking', () => {
+  it('gen.tuple(gen.uint, gen.uint) shrinking', async () => {
     const prop = ([_, b]) => b < 29
-    const { success, shrink: { min } } = forAll(tuple(uint, uint), prop)
+    const { success, shrink: { min } } = await forAll(tuple(uint, uint), prop)
     expect(success).toBe(false)
     expect(min).toEqual([0, 29])
   })
 
-  it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', () => {
+  it('gen.choose(gen.tuple(gen.fmap(gen.uint)) shrinking', async () => {
     const prop = ([a]) => a > -29
-    const { success, shrink: { min } } = forAll(tuple(negative), prop)
+    const { success, shrink: { min } } = await forAll(tuple(negative), prop)
     expect(success).toBe(false)
     expect(min).toEqual([-29])
   })
 
-  it('gen.fmap shrinking', () => {
+  it('gen.fmap shrinking', async () => {
     const prop = (v) => v > -28
-    const { success, shrink: { min } } = forAll(negative, prop)
+    const { success, shrink: { min } } = await forAll(negative, prop)
     expect(success).toBe(false)
     expect(min).toBe(-28)
   })
 
-  it('gen.fmap shrinking', () => {
+  it('gen.fmap shrinking', async () => {
     const prop = (v) => v > -598325
-    const { success, shrink: { min } } = forAll(negative, prop, { count: 2000000 })
+    const { success, shrink: { min } } = await forAll(negative, prop, { count: 2000000 })
     expect(success).toBe(false)
     expect(min).toBe(-598325)
   })
 
-  it('gen.oneOf shrinking', () => {
+  it('gen.oneOf shrinking', async () => {
     const prop = (v) => v < 29
-    const { success, shrink: { min } } = forAll(oneOf(negative, negative, uint), prop)
+    const { success, shrink: { min } } = await forAll(oneOf(negative, negative, uint), prop)
     expect(success).toBe(false)
     expect(min).toBe(29)
   })
 
-  it('gen.oneOf shrinking', () => {
+  it('gen.oneOf shrinking', async () => {
     const prop = (v) => {
       if (v.length !== 3) return true
       const [a, b, c] = v
       return !(a >= 29 && b >= 43 && c>= 7)
     }
-    const { success, shrink: { min } } = forAll(oneOf(
+    const { success, shrink: { min } } = await forAll(oneOf(
       tuple(negative, negative, negative),
       tuple(uint, negative),
       tuple(uint, uint, uint),// <-
@@ -216,27 +215,27 @@ describe('forAll shrinking', () => {
 })
 
 describe('seed', () => {
-  it('forAll (success)', () => {
+  it('forAll (success)', async () => {
     const seedIn = 10
-    const { seed } = forAll(uint, (_) => true, { seed: seedIn })
+    const { seed } = await forAll(uint, (_) => true, { seed: seedIn })
     expect(seed).toBe(seedIn)
   })
 
-  it('forAll (fail)', () => {
+  it('forAll (fail)', async () => {
     const seedIn = 10
-    const { seed } = forAll(uint, (_) => false, { seed: seedIn })
+    const { seed } = await forAll(uint, (_) => false, { seed: seedIn })
     expect(seed).toBe(seedIn)
   })
 
-  it('asyncForAll (success)', async () => {
+  it('async forAll (success)', async () => {
     const seedIn = 10
-    const { seed } = await asyncForAll(uint, (_) => true, { seed: seedIn })
+    const { seed } = await forAll(uint, (_) => true, { seed: seedIn })
     expect(seed).toBe(seedIn)
   })
 
-  it('asyncForAll (fail)', async () => {
+  it('async forAll (fail)', async () => {
     const seedIn = 10
-    const { seed } = await asyncForAll(uint, (_) => false, { seed: seedIn })
+    const { seed } = await forAll(uint, (_) => false, { seed: seedIn })
     expect(seed).toBe(seedIn)
   })
 })

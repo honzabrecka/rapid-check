@@ -5,7 +5,7 @@ const {
 const {
   rng,
   sample,
-  asyncForAll
+  forAll
 } = require('../check')
 
 const {
@@ -27,7 +27,7 @@ describe('forAll preserves gen type', () => {
   it('gen.constantly type', async () => {
     const foo = { foo: 'bar' }
     const prop = (v) => Promise.resolve(v === foo)
-    const { success } = await asyncForAll(constantly(foo), prop)
+    const { success } = await forAll(constantly(foo), prop)
     expect(success).toBe(true)
   })
 })
@@ -41,7 +41,7 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 5 * 60 * 1000
 
 it('gen.fmap shrinking', async () => {
   const prop = (v) => d(10, v > -28)
-  const { success, shrink: { min } } = await asyncForAll(negative, prop)
+  const { success, shrink: { min } } = await forAll(negative, prop)
   expect(success).toBe(false)
   expect(min).toBe(-28)
 })
