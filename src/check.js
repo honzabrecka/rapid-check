@@ -46,7 +46,7 @@ async function shrinkFailing(tree, prop) {
   return reduced
 }
 
-const forAll = async (gen, prop, { count, seed }= {}) => {
+const forAll = async (gen, prop, { count, seed } = {}) => {
   seed = seed || timestamp()
   const samples = sampleGen(rng(seed), gen, count || defaultForAllCount)
   let sample
