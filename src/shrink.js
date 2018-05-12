@@ -1,11 +1,4 @@
-const {
-  comp,
-  intoArray,
-  takeWhile,
-  map,
-  range,
-  conj
-} = require('./core')
+const { conj } = require('./core')
 
 const { RoseTree, rvalue } = require('./rosetree')
 
