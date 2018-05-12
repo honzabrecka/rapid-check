@@ -18,13 +18,13 @@ const defaultForAllCount = 100
 
 const timestamp = () => +new Date()
 
-function* sampleG(rng, gen, count = defaultSampleCount) {
+function* sampleGen(rng, gen, count = defaultSampleCount) {
   for (let i = 0; i < count; i++)
     yield gen(rng, Math.floor(i / 2) + 1)
 }
 
 const sample = (gen, count = defaultSampleCount) =>
-  intoArray(map(([v, _]) => v), sampleG(rng(timestamp()), gen, count))
+  intoArray(map(([v, _]) => v), sampleGen(rng(timestamp()), gen, count))
 
 const shrinkTupleToMap = ([[min, _], attempts, shrinks]) => ({
   min,
@@ -48,7 +48,7 @@ async function shrinkFailing(tree, prop) {
 
 const forAll = async (gen, prop, { count, seed }= {}) => {
   seed = seed || timestamp()
-  const samples = sampleG(rng(seed), gen, count || defaultForAllCount)
+  const samples = sampleGen(rng(seed), gen, count || defaultForAllCount)
   let sample
   let result
 
@@ -70,5 +70,6 @@ const forAll = async (gen, prop, { count, seed }= {}) => {
 
 module.exports = {
   sample,
+  sampleGen,
   forAll,
 }

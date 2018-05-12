@@ -1,9 +1,9 @@
-const { sample, forAll, asyncForAll } = require('./check')
+const { sample, sampleGen, forAll } = require('./check')
 const generators = require('./generators')
 
 module.exports = {
   sample,
+  sampleGen,
   forAll,
-  asyncForAll,
   generators,
 }
