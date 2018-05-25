@@ -2,7 +2,7 @@
 
 Yet another implementation of property based testing framework with support for async properties.
 
-## Prerequisites
+## Prerequisities
 
 It's based on async generators, therefore it requires nodejs >=10.
 
@@ -17,14 +17,14 @@ npm install rapid-check
 Works with any testing framework, here's an example using [jest >=23](https://facebook.github.io/jest/):
 
 ```js
-const { generators } = require('rapid-check')
+const { gen } = require('rapid-check')
 const toMatchProperty = require('rapid-check/src/jest.matcher')
 
 expect.extend({ toMatchProperty })
 
 test('Set.has function', async () => {
   const prop = (v) => new Set([1, 2, 3]).has(v)
-  await expect(generators.choose(1, 3)).toMatchProperty(prop)
+  await expect(gen.choose(1, 3)).toMatchProperty(prop)
 })
 ```
 

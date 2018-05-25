@@ -6,4 +6,5 @@ module.exports = {
   sampleGen,
   forAll,
   generators,
+  gen: generators
 }
