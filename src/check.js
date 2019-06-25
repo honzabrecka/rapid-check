@@ -1,16 +1,10 @@
 const rng = require('./rng')
 
-const {
-  reduce,
-  transduce,
-  intoArray,
-  identity,
-  map,
-  takeWhile,
-  comp
-} = require('./core')
+const { intoArray, map } = require('./core')
 
 const { shrink } = require('./shrink')
+
+const { rvalue, rchildren } = require('./rosetree')
 
 const defaultSampleCount = 10
 
@@ -18,16 +12,17 @@ const defaultForAllCount = 100
 
 const timestamp = () => +new Date()
 
-function* sampleGen(rng, gen, count = defaultSampleCount) {
+function* sampleGen(seed, gen, count = defaultSampleCount) {
+  const r = rng(seed)
   for (let i = 0; i < count; i++)
-    yield gen(rng, Math.floor(i / 2) + 1)
+    yield gen(r, Math.floor(i / 2) + 1)
 }
 
 const sample = (gen, count = defaultSampleCount) =>
-  intoArray(map(([v, _]) => v), sampleGen(rng(timestamp()), gen, count))
+  intoArray(map(rvalue), sampleGen(timestamp(), gen, count))
 
-const shrinkTupleToMap = ([[min, _], attempts, shrinks]) => ({
-  min,
+const shrinkTupleToMap = ([tree, attempts, shrinks]) => ({
+  min: rvalue(tree),
   attempts,
   shrinks,
 })
@@ -35,7 +30,7 @@ const shrinkTupleToMap = ([[min, _], attempts, shrinks]) => ({
 async function shrinkFailing(tree, prop) {
   let reduced = [tree, 0, 0]
 
-  for await (const [result, node] of shrink(tree[1], prop)) {
+  for await (const [result, node] of shrink(rchildren(tree), prop)) {
     reduced = [
       result ? reduced[0] : node,
       reduced[1] + 1,
@@ -48,20 +43,16 @@ async function shrinkFailing(tree, prop) {
 
 const forAll = async (gen, prop, { count, seed } = {}) => {
   seed = seed || timestamp()
-  const samples = sampleGen(rng(seed), gen, count || defaultForAllCount)
-  let sample
-  let result
+  const samples = sampleGen(seed, gen, count || defaultForAllCount)
 
-  while (!(sample = samples.next()).done) {
-    sample = sample.value
-    result = await prop(sample[0])
-
-    if (!result)
+  for (const sample of samples) {
+    const value = rvalue(sample)
+    if (!await prop(value))
       return {
         success: false,
         seed,
         shrink: shrinkTupleToMap(await shrinkFailing(sample, prop)),
-        fail: sample,
+        fail: value,
       }
   }
 

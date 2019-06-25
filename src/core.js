@@ -1,4 +1,4 @@
-function* range(min, max) {
+function* range(min, max = Number.MAX_VALUE) {
   for (let i = min; i <= max; i++)
     yield i
 }
@@ -59,11 +59,14 @@ const odd = complement(even)
 const conj = (col, v) => col.concat([v])
 
 const reduce = (f, init) => (col) => {
-  let current
   let reduced = false
   let prev = init
-  while (!reduced && !(current = col.next()).done)
-    [reduced, prev] = f([reduced, prev], current.value)
+
+  for (const current of col) {
+    [reduced, prev] = f([reduced, prev], current)
+    if (reduced) return prev
+  }
+
   return prev
 }
 

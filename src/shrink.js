@@ -59,12 +59,10 @@ const tuple = (trees) => {
 async function* shrink(nextChildren, prop) {
   let children = nextChildren()
   let i = 0
-  let result
-  let value
 
   while (i < children.length) {
-    [value, nextChildren] = children[i]
-    result = await prop(value)
+    const [value, nextChildren] = children[i]
+    const result = await prop(value)
 
     if (result) {
       i++
