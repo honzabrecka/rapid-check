@@ -1,11 +1,6 @@
 const { forAll } = require('./check')
 
-const isPromise = v => typeof v === 'object' && v.then === 'function'
-
-const complement = f => async v => {
-  const r = f(v)
-  return isPromise(r) ? !(await r) : !r
-}
+const complement = f => async v => !(await f(v))
 
 module.exports = async function toMatchProperty(gen, prop, opts) {
   const result = await forAll(gen, this.isNot ? complement(prop) : prop, opts)
