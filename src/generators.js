@@ -42,33 +42,6 @@ const array = (gen, min = 0, max = Number.MAX_VALUE) => (rng, size) => mbind(
   choose(min, Math.min(max, size))
 )(rng, size)
 
-const consequence = (seq, id) => (rng, size) => {
-  const $id = id()
-  const conseq = seq.reduce(([r, i, p], v) => {
-    v = Array.isArray(v) ? consequenceN(v, () => $id) : v($id)
-    const nv = p.concat([v])
-    return [
-      r.concat([nv]),
-      i + 1,
-      nv
-    ]
-  }, [[[]], 0, []])[0]
-  const m = conseq.map((s) => ap(tuple, s))
-  return ap(oneOf, m)(rng, size)
-}
-
-const consequenceN = (seq, id) => mbind(
-  (count) => ap(tuple, repeat(consequence(seq, id), count)),
-  uint
-)
-
-const uuid = () => {
-  let i = 0
-  return () => {
-    return i++
-  }
-}
-
 module.exports = {
   constantly,
   choose,
@@ -82,8 +55,4 @@ module.exports = {
   //
   fmap,
   mbind,
-  //
-  consequence,
-  consequenceN,
-  uuid,
 }
