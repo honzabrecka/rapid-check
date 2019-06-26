@@ -4,6 +4,9 @@
   "main": "src/index.js",
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
+  "engines": {
+    "node": ">=10"
+  },
   "dependencies": {
     "random-js": "^1.0.8"
   },
