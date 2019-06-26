@@ -3,7 +3,7 @@ const {
   fmap
 } = require('../rosetree')
 
-const { inc } = require('../core')
+const inc = (n) => n + 1
 
 it('fmap', () => {
   const tree = [1, () => [

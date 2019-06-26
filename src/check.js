@@ -1,7 +1,5 @@
 const rng = require('./rng')
 
-const { intoArray, map } = require('./core')
-
 const { shrink } = require('./shrink')
 
 const { rvalue, rchildren } = require('./rosetree')
@@ -18,8 +16,7 @@ function* sampleGen(seed, gen, count = defaultSampleCount) {
     yield gen(r, Math.floor(i / 2) + 1)
 }
 
-const sample = (gen, count = defaultSampleCount) =>
-  intoArray(map(rvalue), sampleGen(timestamp(), gen, count))
+const sample = (gen, count = defaultSampleCount) => [...sampleGen(timestamp(), gen, count)].map(rvalue)
 
 const shrinkTupleToMap = ([tree, attempts, shrinks]) => ({
   min: rvalue(tree),

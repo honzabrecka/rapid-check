@@ -1,9 +1,9 @@
-const { conj } = require('./core')
-
 const { RoseTree, rvalue } = require('./rosetree')
 
 // type ShrinkResult T = [boolean, RoseTree T]
 const ShrinkResult = (result, tree) => [result, tree]
+
+const conj = (col, v) => col.concat([v])
 
 const roundTowardZero = (x) =>
   x < 0

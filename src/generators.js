@@ -1,7 +1,8 @@
-const { ap, repeat } = require('./core')
 const rosetree = require('./rosetree')
 const shrink = require('./shrink')
 const { RoseTree, rvalue } = rosetree
+
+const ap = (f, args) => f.apply(null, args)
 
 const constantly = (value) => (_rng, _size) => RoseTree(value, () => [])
 
@@ -37,7 +38,7 @@ const oneOf = (...gens) => mbind(
 const bool = oneOf(constantly(true), constantly(false))
 
 const array = (gen, min = 0, max = Number.MAX_VALUE) => (rng, size) => mbind(
-  (count) => ap(tuple, repeat(gen, count)),
+  (count) => ap(tuple, new Array(count).fill(gen)),
   choose(min, Math.min(max, size))
 )(rng, size)
 
