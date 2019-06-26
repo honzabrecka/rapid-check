@@ -7,4 +7,5 @@ jobs:
     steps:
       - checkout
       - run: yarn install
+      - run: yarn format:check
       - run: yarn jest

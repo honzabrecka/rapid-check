@@ -12,11 +12,11 @@ const timestamp = () => +new Date()
 
 function* sampleGen(seed, gen, count = defaultSampleCount) {
   const r = rng(seed)
-  for (let i = 0; i < count; i++)
-    yield gen(r, Math.floor(i / 2) + 1)
+  for (let i = 0; i < count; i++) yield gen(r, Math.floor(i / 2) + 1)
 }
 
-const sample = (gen, count = defaultSampleCount) => [...sampleGen(timestamp(), gen, count)].map(rvalue)
+const sample = (gen, count = defaultSampleCount) =>
+  [...sampleGen(timestamp(), gen, count)].map(rvalue)
 
 const shrinkTupleToMap = ([tree, attempts, shrinks]) => ({
   min: rvalue(tree),
@@ -31,7 +31,7 @@ async function shrinkFailing(tree, prop) {
     reduced = [
       result ? reduced[0] : node,
       reduced[1] + 1,
-      reduced[2] + (result ? 0 : 1)
+      reduced[2] + (result ? 0 : 1),
     ]
   }
 
@@ -44,7 +44,7 @@ const forAll = async (gen, prop, { count, seed } = {}) => {
 
   for (const sample of samples) {
     const value = rvalue(sample)
-    if (!await prop(value))
+    if (!(await prop(value)))
       return {
         success: false,
         seed,

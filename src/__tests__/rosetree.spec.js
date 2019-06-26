@@ -1,14 +1,9 @@
-const {
-  toRoseTrees,
-  fmap
-} = require('../rosetree')
+const { toRoseTrees, fmap } = require('../rosetree')
 
-const inc = (n) => n + 1
+const inc = n => n + 1
 
 it('fmap', () => {
-  const tree = [1, () => [
-    [5, () => []]
-  ]]
+  const tree = [1, () => [[5, () => []]]]
   const mappedTree = fmap(inc, tree)
   // root value
   expect(mappedTree[0]).toEqual(2)

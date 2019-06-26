@@ -11,9 +11,20 @@
     "random-js": "^1.0.8"
   },
   "devDependencies": {
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2"
   },
   "jest": {
     "transform": {}
+  },
+  "scripts": {
+    "format:check": "prettier --check 'src/**/*.js'"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
   }
 }
